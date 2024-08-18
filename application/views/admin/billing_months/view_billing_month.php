@@ -321,7 +321,7 @@
 
     </div>
 </div>
-
+ 
 <script>
     function get_payments(payment_id) {
         $.ajax({

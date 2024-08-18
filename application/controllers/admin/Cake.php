@@ -22,14 +22,14 @@ class Cake extends Admin_Controller
     public function index()
     {
 
-        $this->data["title"] = 'vendors_taxes';
-        $this->data["description"] = 'vendors_taxes';
+        $this->data["title"] = 'billing_months';
+        $this->data["description"] = 'billing_months';
         // $this->data["view"] = ADMIN_DIR . "cake/index";
 
 
-        $controller_name = 'payments';
-        $table_name = "payments";
-        $table_name_singular = "payment";
+        $controller_name = 'billing_months';
+        $table_name = "billing_months";
+        $table_name_singular = "billing_month";
         $query = "SHOW COLUMNS FROM $table_name";
 
 

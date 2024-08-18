@@ -162,10 +162,7 @@
                                         <td>
                                             <?php if ($row->status == 1) { ?>
                                                 <a href="<?php echo site_url(ADMIN_DIR . 'consumers/view_consumer_bill_detail/' . $row->consumer_id . '/' . $row->consumer_monthly_bill_id) ?>">View Detail</a>
-                                                <button class="btn btn-success" onclick="get_comsumer_monthly_bill_form('<?php echo $row->consumer_monthly_bill_id; ?>', '<?php $billing_month->billing_month_id ?>')">Edit Bill</botton>
-                                                    <button class="btn btn-danger" onclick="get_payments('<?php echo $row->consumer_monthly_bill_id; ?>')">Payments</botton>
-
-                                                    <?php } ?>
+                                                   <?php } ?>
                                         </td>
                                     </tr>
                                 <?php } else { ?>

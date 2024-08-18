@@ -9,11 +9,13 @@
             <ul class="breadcrumb">
                 <li>
                     <i class="fa fa-home"></i>
-                    <a href="<?php echo site_url(ADMIN_DIR . $this->session->userdata("role_homepage_uri")); ?>"><?php echo $this->lang->line('Home'); ?></a>
+                    <a
+                        href="<?php echo site_url(ADMIN_DIR . $this->session->userdata("role_homepage_uri")); ?>"><?php echo $this->lang->line('Home'); ?></a>
                 </li>
                 <li>
                     <i class="fa fa-table"></i>
-                    <a href="<?php echo site_url(ADMIN_DIR . "billing_months/view/"); ?>"><?php echo $this->lang->line('Billing Months'); ?></a>
+                    <a
+                        href="<?php echo site_url(ADMIN_DIR . "billing_months/view/"); ?>"><?php echo $this->lang->line('Billing Months'); ?></a>
                 </li>
                 <li><?php echo $title; ?></li>
             </ul>
@@ -28,10 +30,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="pull-right">
-                        <a class="btn btn-primary btn-sm" href="<?php echo site_url(ADMIN_DIR . "billing_months/add"); ?>"><i class="fa fa-plus"></i> <?php echo $this->lang->line('New'); ?></a>
-                        <a class="btn btn-danger btn-sm" href="<?php echo site_url(ADMIN_DIR . "billing_months/trashed"); ?>"><i class="fa fa-trash-o"></i> <?php echo $this->lang->line('Trash'); ?></a>
-                    </div>
+
                 </div>
 
             </div>
@@ -69,193 +68,108 @@
             </div>
             <div class="box-body">
 
-                <?php
-                $add_form_attr = array("class" => "form-horizontal");
-                echo form_open_multipart(ADMIN_DIR . "billing_months/save_data", $add_form_attr);
-                ?>
 
-                <div class="form-group">
 
-                    <?php
-                    $label = array(
-                        "class" => "col-md-2 control-label",
-                        "style" => "",
-                    );
-                    echo form_label($this->lang->line('billing_month'), "billing_month", $label);      ?>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="billing_months">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>#</th>
+                                <th>Billing Month</th>
+                                <th>Meter Reading Start</th>
+                                <th>Meter Reading End</th>
+                                <th>Billing Issue Date</th>
+                                <th>Billing Due Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                $count=1;
+                $query = "SELECT * FROM billing_months";
+                $rows = $this->db->query($query)->result();
+                foreach ($rows as $row) { ?>
+                            <tr>
+                                <td><a href="<?php echo site_url(ADMIN_DIR . 'billing_months/delete_billing_months/' . $row->billing_month_id); ?>"
+                                        onclick="return confirm('Are you sure? you want to delete the record.')">Delete</a>
+                                </td>
+                                <td><?php echo $count++ ?></td>
+                                <td><?php echo $row->billing_month; ?></td>
+                                <td><?php echo $row->meter_reading_start; ?></td>
+                                <td><?php echo $row->meter_reading_end; ?></td>
+                                <td><?php echo $row->billing_issue_date; ?></td>
+                                <td><?php echo $row->billing_due_date; ?></td>
+                                <td>
+                                    <?php
+                                        if ($row->status == 1) {
+                                            echo '<span class="label label-success">Active</span>';
+                                        } else {
+                                            echo '<span class="label label-danger">Closed</span>';
+                                        }
+                                        ?>
+                                </td>
+                                <td><button
+                                        onclick="get_billing_month_form('<?php echo $row->billing_month_id; ?>')">Edit
+                                        <botton>
+                                </td>
+                            </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
 
-                    <div class="col-md-8">
-                        <?php
+                    <?php 
+                                    
+                             $query = "SELECT * FROM billing_months WHERE status=1";
+                $billing_month = $this->db->query($query)->row();
+                
+                                    $query="SELECT COUNT(*) as total FROM `consumers`
+                                            WHERE date(`consumers`.`date_of_registration`) <= ?;";
+                                    $consumer_till_now = $this->db->query($query,array($billing_month->billing_month."-1"))->row()->total; 
+                                    ?>
+                    <?php 
 
-                        $date = array(
-                            "type"          =>  "month",
-                            "name"          =>  "billing_month",
-                            "id"            =>  "billing_month",
-                            "class"         =>  "form-control",
-                            "style"         =>  "",
-                            "required"      => "required",
-                            "title"         =>  $this->lang->line('billing_month'),
-                            "value"         =>  set_value("billing_month"),
-                            "placeholder"   =>  $this->lang->line('billing_month')
-                        );
-                        echo  form_input($date);
-                        ?>
-                        <?php echo form_error("billing_month", "<p class=\"text-danger\">", "</p>"); ?>
+                                    $query="SELECT COUNT(*) as total FROM `consumers` as c 
+                                            RIGHT JOIN consumer_monthly_bills as cmb ON(cmb.consumer_id = c.consumer_id)
+                                            WHERE date(`c`.`date_of_registration`) <= ?
+                                            AND cmb.billing_month_id = ?;";
+                                    $reading_till_now = $this->db->query($query,array($billing_month->billing_month."-1", $billing_month->billing_month_id))->row()->total; 
+                                    //$billing_month->billing_due_date>date('Y-m-d') and
+                                    ?>
+
+
+                    <div style="text-align: center;">
+                        <?php if( $reading_till_now>=$consumer_till_now){ ?>
+                        <button onclick="get_billing_month_form('0')" class="btn btn-primary">Add Record</button>
+
+                        <?php }else{ ?>
+                        <div class="alert alert-danger">
+                            Previous meter reading is not complete yet. The option to add monthly billing will be
+                            available once the meter reading entry is completed. Thank you.
+                        </div>
+                        <?php }?>
                     </div>
-
-
-
                 </div>
-
-                <div class="form-group">
-
-                    <?php
-                    $label = array(
-                        "class" => "col-md-2 control-label",
-                        "style" => "",
-                    );
-                    echo form_label($this->lang->line('meter_reading_start'), "meter_reading_start", $label);      ?>
-
-                    <div class="col-md-8">
-                        <?php
-
-                        $date = array(
-                            "type"          =>  "date",
-                            "name"          =>  "meter_reading_start",
-                            "id"            =>  "meter_reading_start",
-                            "class"         =>  "form-control",
-                            "style"         =>  "", "required"      => "required", "title"         =>  $this->lang->line('meter_reading_start'),
-                            "value"         =>  set_value("meter_reading_start"),
-                            "placeholder"   =>  $this->lang->line('meter_reading_start')
-                        );
-                        echo  form_input($date);
-                        ?>
-                        <?php echo form_error("meter_reading_start", "<p class=\"text-danger\">", "</p>"); ?>
-                    </div>
-
-
-
-                </div>
-
-                <div class="form-group">
-
-                    <?php
-                    $label = array(
-                        "class" => "col-md-2 control-label",
-                        "style" => "",
-                    );
-                    echo form_label($this->lang->line('meter_reading_end'), "meter_reading_end", $label);      ?>
-
-                    <div class="col-md-8">
-                        <?php
-
-                        $date = array(
-                            "type"          =>  "date",
-                            "name"          =>  "meter_reading_end",
-                            "id"            =>  "meter_reading_end",
-                            "class"         =>  "form-control",
-                            "style"         =>  "", "required"      => "required", "title"         =>  $this->lang->line('meter_reading_end'),
-                            "value"         =>  set_value("meter_reading_end"),
-                            "placeholder"   =>  $this->lang->line('meter_reading_end')
-                        );
-                        echo  form_input($date);
-                        ?>
-                        <?php echo form_error("meter_reading_end", "<p class=\"text-danger\">", "</p>"); ?>
-                    </div>
-
-
-
-                </div>
-
-                <div class="form-group">
-
-                    <?php
-                    $label = array(
-                        "class" => "col-md-2 control-label",
-                        "style" => "",
-                    );
-                    echo form_label($this->lang->line('billing_issue_date'), "billing_issue_date", $label);      ?>
-
-                    <div class="col-md-8">
-                        <?php
-
-                        $date = array(
-                            "type"          =>  "date",
-                            "name"          =>  "billing_issue_date",
-                            "id"            =>  "billing_issue_date",
-                            "class"         =>  "form-control",
-                            "style"         =>  "", "required"      => "required", "title"         =>  $this->lang->line('billing_issue_date'),
-                            "value"         =>  set_value("billing_issue_date"),
-                            "placeholder"   =>  $this->lang->line('billing_issue_date')
-                        );
-                        echo  form_input($date);
-                        ?>
-                        <?php echo form_error("billing_issue_date", "<p class=\"text-danger\">", "</p>"); ?>
-                    </div>
-
-
-
-                </div>
-
-                <div class="form-group">
-
-                    <?php
-                    $label = array(
-                        "class" => "col-md-2 control-label",
-                        "style" => "",
-                    );
-                    echo form_label($this->lang->line('billing_due_date'), "billing_due_date", $label);      ?>
-
-                    <div class="col-md-8">
-                        <?php
-
-                        $date = array(
-                            "type"          =>  "date",
-                            "name"          =>  "billing_due_date",
-                            "id"            =>  "billing_due_date",
-                            "class"         =>  "form-control",
-                            "style"         =>  "", "required"      => "required", "title"         =>  $this->lang->line('billing_due_date'),
-                            "value"         =>  set_value("billing_due_date"),
-                            "placeholder"   =>  $this->lang->line('billing_due_date')
-                        );
-                        echo  form_input($date);
-                        ?>
-                        <?php echo form_error("billing_due_date", "<p class=\"text-danger\">", "</p>"); ?>
-                    </div>
-
-
-
-                </div>
-
-                <div class="col-md-offset-2 col-md-10">
-                    <?php
-                    $submit = array(
-                        "type"  =>  "submit",
-                        "name"  =>  "submit",
-                        "value" =>  $this->lang->line('Save'),
-                        "class" =>  "btn btn-primary",
-                        "style" =>  ""
-                    );
-                    echo form_submit($submit);
-                    ?>
-
-
-
-                    <?php
-                    $reset = array(
-                        "type"  =>  "reset",
-                        "name"  =>  "reset",
-                        "value" =>  $this->lang->line('Reset'),
-                        "class" =>  "btn btn-default",
-                        "style" =>  ""
-                    );
-                    echo form_reset($reset);
-                    ?>
-                </div>
-                <div style="clear:both;"></div>
-
-                <?php echo form_close(); ?>
-
+                <script>
+                function get_billing_month_form(billing_month_id) {
+                    $.ajax({
+                            method: "POST",
+                            url: "<?php echo site_url(ADMIN_DIR . 'billing_months/get_billing_month_form'); ?>",
+                            data: {
+                                billing_month_id: billing_month_id
+                            },
+                        })
+                        .done(function(respose) {
+                            $('#modal').modal('show');
+                            $('#modal_title').html('Billing Months');
+                            $('#modal_body').html(respose);
+                        });
+                }
+                </script>
             </div>
+
+
 
         </div>
     </div>

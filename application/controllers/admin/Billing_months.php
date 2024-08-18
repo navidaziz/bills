@@ -44,6 +44,8 @@ class Billing_months extends Admin_Controller
             $this->data['filter_month'] = $current_month[1];
         }
 
+        
+
         $billing_month = $this->data['filter_year'] . "-" . $this->data['filter_month'];
         $this->data['BillingMonth'] = $billing_month;
 
@@ -275,7 +277,10 @@ class Billing_months extends Admin_Controller
         $this->data["billing_month"] = $this->data["billing_months"][0];
 
         $this->load->view(ADMIN_DIR . "billing_months/print_billing_month", $this->data);
-//exit();
+
+
+
+        //exit();
 
         
 // $html='hi';
@@ -309,6 +314,80 @@ class Billing_months extends Admin_Controller
 
 //             // Close and output PDF document
 //             $pdf->Output('example.pdf', 'I');
+        }
+  private function get_billing_month_inputs(){
+            $input["billing_month_id"] = $this->input->post("billing_month_id");
+            $input["billing_month"] = $this->input->post("billing_month");
+            $input["meter_reading_start"] = $this->input->post("meter_reading_start");
+            $input["meter_reading_end"] = $this->input->post("meter_reading_end");
+            $input["billing_issue_date"] = $this->input->post("billing_issue_date");
+            $input["billing_due_date"] = $this->input->post("billing_due_date");
+            $inputs =  (object) $input;
+        return $inputs;
+        }
+
+        public function get_billing_month_form(){
+        $billing_month_id = (int) $this->input->post("billing_month_id");
+        if ($billing_month_id == 0) {
+            
+        $input = $this->get_billing_month_inputs();
+           } else {
+            $query = "SELECT * FROM 
+            billing_months 
+            WHERE billing_month_id = $billing_month_id";
+            $input = $this->db->query($query)->row();
+            }
+            $this->data["input"] = $input;
+            $this->load->view(ADMIN_DIR . "billing_months/get_billing_month_form", $this->data);
+            }
+
+            public function add_billing_month()
+        {
+            $this->form_validation->set_rules("billing_month", "Billing Month", "required");
+                $this->form_validation->set_rules("meter_reading_start", "Meter Reading Start", "required");
+                $this->form_validation->set_rules("meter_reading_end", "Meter Reading End", "required");
+                $this->form_validation->set_rules("billing_issue_date", "Billing Issue Date", "required");
+                $this->form_validation->set_rules("billing_due_date", "Billing Due Date", "required");
+                
+            if ($this->form_validation->run() == FALSE) {
+                echo '<div class="alert alert-danger">' . validation_errors() . "</div>";
+                exit();
+            } else {
+
+
+                $query = "SELECT billing_month FROM billing_months WHERE status=1";
+                $active_month = $this->db->query($query)->row()->billing_month;
+                $billing_month = $this->input->post('billing_month');
+
+                // Calculate the next month after the active month
+                $next_month = date("Y-m", strtotime($active_month . " +1 month"));
+
+                // Check if the billing month is exactly equal to the next month
+                if ($billing_month == $next_month) {
+                    // Code to add the billing month to the database or perform the desired action
+                    echo "Billing month is valid and added successfully.";
+                } else {
+                    echo "Billing month must be exactly one month after the active month (" . date("M, Y", strtotime($active_month)) . ").";
+                }
+
+
+
+
+
+
+                $inputs = $this->get_billing_month_inputs();
+         $inputs->created_by = $this->session->userdata("userId");
+        $billing_month_id = (int) $this->input->post("billing_month_id");
+                if ($billing_month_id == 0) {
+                    $this->db->insert("billing_months", $inputs);
+
+                } else {
+                    $this->db->where("billing_month_id", $billing_month_id); 
+                    $inputs->last_updated = date('Y-m-d H:i:s');
+                    $this->db->update("billing_months", $inputs);
+                }
+                echo "success";
+            }
         }
     
     

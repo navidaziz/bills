@@ -117,10 +117,7 @@
                   <i class="fa fa-lock"></i>
                   <input type="password" name="user_password" class="form-control" id="user_password" value="">
                 </div>
-                <div class="form-group">
-                  <div class="g-recaptcha" data-sitekey="6Leuqa4ZAAAAAEBURd3DWqmwV4cdzXi5zzcljMLR" style="height: 100px;">
-                  </div>
-                </div>
+                
                 <div>
                   <button type="submit" class="btn btn-danger">Login</button>
                 </div>

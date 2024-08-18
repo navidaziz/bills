@@ -14,7 +14,7 @@
         <div class="form-group row">
             <label for="last_reading" class="col-sm-4 col-form-label">Last Reading</label>
             <div class="col-sm-8">
-                <input type="text" required id="last_reading" name="last_reading" value="<?php echo $input->last_reading; ?>" class="form-control">
+                <input type="number" required id="last_reading" name="last_reading" value="<?php echo $input->last_reading; ?>" class="form-control">
             </div>
         </div>
     <?php } ?>
@@ -22,14 +22,14 @@
     <div class="form-group row">
         <label for="current_reading" class="col-sm-4 col-form-label">Current Reading</label>
         <div class="col-sm-8">
-            <input min="<?php echo $input->last_reading; ?>" type="text" required id="current_reading" name="current_reading" value="<?php echo $input->current_reading; ?>" class="form-control">
+            <input min="<?php echo $input->last_reading; ?>" type="number" required id="current_reading" name="current_reading" value="<?php echo $input->current_reading; ?>" class="form-control">
         </div>
     </div>
     <?php if ($input->last_reading == 0) { ?>
         <div class="form-group row">
             <label for="last_month_arrears" class="col-sm-4 col-form-label">Last Month Arrears</label>
             <div class="col-sm-8">
-                <input type="text" required id="last_month_arrears" name="last_month_arrears" value="<?php echo $input->last_month_arrears; ?>" class="form-control">
+                <input type="number" required id="last_month_arrears" name="last_month_arrears" value="<?php echo $input->last_month_arrears; ?>" class="form-control">
             </div>
         </div>
     <?php } ?>

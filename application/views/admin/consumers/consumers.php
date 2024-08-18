@@ -80,21 +80,6 @@
                                 <th><?php echo $this->lang->line('consumer_meter_no'); ?></th>
                                 <th><?php echo $this->lang->line('date_of_registration'); ?></th>
                                 <th><?php echo $this->lang->line('tariff_type'); ?></th>
-
-                                <th>Reading Date</th>
-                                <th>Last Reading</th>
-                                <th>Current Reading</th>
-                                <th>Unit Cosumed</th>
-                                <th>Rate</th>
-                                <th>Total</th>
-                                <th>Monthly Service Charges</th>
-                                <th>Tax Per</th>
-                                <th>Tax Rs</th>
-                                <th>Last Month Arrears</th>
-                                <th>Payable Within Due Date</th>
-                                <th>Payable After Due Date</th>
-                                <th>Paid</th>
-                                <th>Dues</th>
                                 <th><?php echo $this->lang->line('Action'); ?></th>
 
                             </tr>
@@ -138,48 +123,7 @@
                                         <?php echo $consumer->tariff_type; ?>
                                     </td>
 
-                                    <?php
-
-                                    $query = "SELECT * FROM consumer_monthly_bills
-                                        WHERE  billing_month_id = '" . $billing_month->billing_month_id . "'
-                                        AND consumer_id = '" . $consumer->consumer_id . "'";
-                                    $row = $this->db->query($query)->row();
-                                    if ($row) {
-                                    ?>
-
-
-                                        <td><?php echo $row->reading_date; ?></td>
-                                        <td><?php echo $row->last_reading; ?></td>
-                                        <td><?php echo $row->current_reading; ?></td>
-                                        <td><?php echo $row->unit_cosumed; ?></td>
-                                        <td><?php echo $row->rate; ?></td>
-                                        <td><?php echo $row->total; ?></td>
-                                        <td><?php echo $row->monthly_service_charges; ?></td>
-                                        <td><?php echo $row->tax_per; ?></td>
-                                        <td><?php echo $row->tax_rs; ?></td>
-                                        <td><?php echo $row->last_month_arrears; ?></td>
-                                        <td><?php echo $row->payable_within_due_date; ?></td>
-                                        <td><?php echo $row->payable_after_due_date; ?></td>
-                                        <td><?php echo $row->paid; ?></td>
-                                        <td><?php echo $row->dues; ?></td>
-                                    <?php } else { ?>
-                                        <td></td>
-
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    <?php } ?>
-
+                                   
 
                                     <td>
                                         <a class="llink llink-edit" href="<?php echo site_url(ADMIN_DIR . "consumers/edit/" . $consumer->consumer_id . "/" . $this->uri->segment(4)); ?>"><i class="fa fa-pencil-square-o"></i></a>

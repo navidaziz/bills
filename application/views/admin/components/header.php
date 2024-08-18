@@ -97,7 +97,6 @@
       <div class="navbar-brand">
 
         <a href="<?php echo site_url($this->session->userdata("role_homepage_uri")); ?>"> <img src="<?php echo site_url("assets/uploads/" . $system_global_settings[0]->sytem_admin_logo); ?>" alt="<?php echo $system_global_settings[0]->system_title ?>" title="<?php echo $system_global_settings[0]->system_title ?>" class="img-responsive " style="width:40px"></a>
-        <div class="visible-xs "> <a href="#" class="team-status-toggle switcher btn dropdown-toggle"> <i class="fa fa-users"></i> </a> </div>
         <div id="sidebar-collapse" class="sidebar-collapse btn"> <i class="fa fa-bars" data-icon1="fa fa-bars" data-icon2="fa fa-bars"></i> </div>
       </div>
       <div class="nav navbar-nav pull-left"> </div>

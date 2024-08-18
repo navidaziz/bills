@@ -244,173 +244,160 @@ class Consumers extends Admin_Controller
     }
 
 
-    /**
-     * get data as a json array 
-     */
-    public function get_json()
-    {
-        $where = array("status" => 1);
-        $where[$this->uri->segment(3)] = $this->uri->segment(4);
-        $data["consumers"] = $this->consumer_model->getBy($where, false, "consumer_id");
-        $j_array[] = array("id" => "", "value" => "consumer");
-        foreach ($data["consumers"] as $consumer) {
-            $j_array[] = array("id" => $consumer->consumer_id, "value" => "");
-        }
-        echo json_encode($j_array);
-    }
+    
     //-----------------------------------------------------
-    public function delete_payment($payment_id)
-    {
-        $query = "SELECT consumer_monthly_bill_id FROM payments WHERE payments.payment_id = '" . $payment_id . "'";
-        $payment = $this->db->query($query)->row();
-        $consumer_monthly_bill_id = $payment->consumer_monthly_bill_id;
+    // public function delete_payment($payment_id)
+    // {
+    //     $query = "SELECT consumer_monthly_bill_id FROM payments WHERE payments.payment_id = '" . $payment_id . "'";
+    //     $payment = $this->db->query($query)->row();
+    //     $consumer_monthly_bill_id = $payment->consumer_monthly_bill_id;
 
-        $payment_id = (int) $payment_id;
-        $this->db->where("payment_id", $payment_id);
-        $this->db->delete("payments");
+    //     $payment_id = (int) $payment_id;
+    //     $this->db->where("payment_id", $payment_id);
+    //     $this->db->delete("payments");
 
-        $this->db->query("
-        UPDATE `consumer_monthly_bills`
-        SET `paid` = (
-        SELECT COALESCE(SUM(payments.amount_paid), 0)
-        FROM payments
-        WHERE payments.consumer_monthly_bill_id = `consumer_monthly_bills`.`consumer_monthly_bill_id`
-        )
-        WHERE `consumer_monthly_bills`.`consumer_monthly_bill_id` = $consumer_monthly_bill_id
-        ");
-
-
-        //calculate dues 
-        $query = "SELECT MIN(payment_date) as p_date FROM payments WHERE payment_id = '" . $payment_id . "'";
-        $first_payment = $this->db->query($query)->row();
-
-        // SQL Query to get the bill details
-        $query = "
-        SELECT 
-        billing_months.billing_due_date
-        FROM consumer_monthly_bills
-        INNER JOIN billing_months 
-        ON billing_months.billing_month_id = consumer_monthly_bills.billing_month_id
-        WHERE 
-        consumer_monthly_bills.consumer_monthly_bill_id = ? ";
-        $billing_due_date = $this->db->query($query, [$consumer_monthly_bill_id])->row()->billing_due_date;
-
-        if ($first_payment->p_date <= $billing_due_date) {
-            $query = "UPDATE `consumer_monthly_bills` SET `payable`= `payable_within_due_date` WHERE consumer_monthly_bill_id = ?";
-            $this->db->query($query, [$consumer_monthly_bill_id]);
-        } else {
-            $query = "UPDATE `consumer_monthly_bills` SET `payable`= `payable_after_due_date` WHERE consumer_monthly_bill_id = ?";
-            $this->db->query($query, [$consumer_monthly_bill_id]);
-        }
-
-        //calcualte due
-        $query = "UPDATE `consumer_monthly_bills` SET `dues`= (`payable`-`paid`) WHERE consumer_monthly_bill_id = ?";
-        $this->db->query($query, [$consumer_monthly_bill_id]);
+    //     $this->db->query("
+    //     UPDATE `consumer_monthly_bills`
+    //     SET `paid` = (
+    //     SELECT COALESCE(SUM(payments.amount_paid), 0)
+    //     FROM payments
+    //     WHERE payments.consumer_monthly_bill_id = `consumer_monthly_bills`.`consumer_monthly_bill_id`
+    //     )
+    //     WHERE `consumer_monthly_bills`.`consumer_monthly_bill_id` = $consumer_monthly_bill_id
+    //     ");
 
 
-        $consumer_monthly_bill_id = (int) $this->input->post('consumer_monthly_bill_id');
+    //     //calculate dues 
+    //     $query = "SELECT MIN(payment_date) as p_date FROM payments WHERE payment_id = '" . $payment_id . "'";
+    //     $first_payment = $this->db->query($query)->row();
+
+    //     // SQL Query to get the bill details
+    //     $query = "
+    //     SELECT 
+    //     billing_months.billing_due_date
+    //     FROM consumer_monthly_bills
+    //     INNER JOIN billing_months 
+    //     ON billing_months.billing_month_id = consumer_monthly_bills.billing_month_id
+    //     WHERE 
+    //     consumer_monthly_bills.consumer_monthly_bill_id = ? ";
+    //     $billing_due_date = $this->db->query($query, [$consumer_monthly_bill_id])->row()->billing_due_date;
+
+    //     if ($first_payment->p_date <= $billing_due_date) {
+    //         $query = "UPDATE `consumer_monthly_bills` SET `payable`= `payable_within_due_date` WHERE consumer_monthly_bill_id = ?";
+    //         $this->db->query($query, [$consumer_monthly_bill_id]);
+    //     } else {
+    //         $query = "UPDATE `consumer_monthly_bills` SET `payable`= `payable_after_due_date` WHERE consumer_monthly_bill_id = ?";
+    //         $this->db->query($query, [$consumer_monthly_bill_id]);
+    //     }
+
+    //     //calcualte due
+    //     $query = "UPDATE `consumer_monthly_bills` SET `dues`= (`payable`-`paid`) WHERE consumer_monthly_bill_id = ?";
+    //     $this->db->query($query, [$consumer_monthly_bill_id]);
+
+
+    //     $consumer_monthly_bill_id = (int) $this->input->post('consumer_monthly_bill_id');
 
 
 
-        $requested_url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : base_url();
-        redirect($requested_url);
-    }
+    //     $requested_url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : base_url();
+    //     redirect($requested_url);
+    // }
 
-    public function get_payments()
-    {
-        $payment_id = (int) $this->input->post("payment_id");
-        if ($payment_id == 0) {
+    // public function get_payments()
+    // {
+    //     $payment_id = (int) $this->input->post("payment_id");
+    //     if ($payment_id == 0) {
 
-            $input = $this->get_payment_inputs();
-        } else {
-            $query = "SELECT * FROM 
-            payments 
-            WHERE payment_id = $payment_id";
-            $input = $this->db->query($query)->row();
-        }
-        $this->data["input"] = $input;
-        $this->load->view(ADMIN_DIR . "consumers/payments", $this->data);
-    }
+    //         $input = $this->get_payment_inputs();
+    //     } else {
+    //         $query = "SELECT * FROM 
+    //         payments 
+    //         WHERE payment_id = $payment_id";
+    //         $input = $this->db->query($query)->row();
+    //     }
+    //     $this->data["input"] = $input;
+    //     $this->load->view(ADMIN_DIR . "consumers/payments", $this->data);
+    // }
 
-    private function get_payment_inputs()
-    {
-        $input["payment_id"] = $this->input->post("payment_id");
-        $input["consumer_monthly_bill_id"] = $this->input->post("consumer_monthly_bill_id");
-        $input["payment_date"] = $this->input->post("payment_date");
-        $input["amount_paid"] = $this->input->post("amount_paid");
-        $input["payment_method"] = $this->input->post("payment_method");
-        $input["notes"] = $this->input->post("notes");
-        $inputs =  (object) $input;
-        return $inputs;
-    }
+    // private function get_payment_inputs()
+    // {
+    //     $input["payment_id"] = $this->input->post("payment_id");
+    //     $input["consumer_monthly_bill_id"] = $this->input->post("consumer_monthly_bill_id");
+    //     $input["payment_date"] = $this->input->post("payment_date");
+    //     $input["amount_paid"] = $this->input->post("amount_paid");
+    //     $input["payment_method"] = $this->input->post("payment_method");
+    //     $input["notes"] = $this->input->post("notes");
+    //     $inputs =  (object) $input;
+    //     return $inputs;
+    // }
 
-    public function add_payment()
-    {
-        $this->form_validation->set_rules("consumer_monthly_bill_id", "Consumer Monthly Bill Id", "required");
-        $this->form_validation->set_rules("payment_date", "Payment Date", "required");
-        $this->form_validation->set_rules("amount_paid", "Amount Paid", "required");
-        $this->form_validation->set_rules("payment_method", "Payment Method", "required");
-        $this->form_validation->set_rules("notes", "Notes", "required");
+    // public function add_payment()
+    // {
+    //     $this->form_validation->set_rules("consumer_monthly_bill_id", "Consumer Monthly Bill Id", "required");
+    //     $this->form_validation->set_rules("payment_date", "Payment Date", "required");
+    //     $this->form_validation->set_rules("amount_paid", "Amount Paid", "required");
+    //     $this->form_validation->set_rules("payment_method", "Payment Method", "required");
+    //     $this->form_validation->set_rules("notes", "Notes", "required");
 
-        $consumer_monthly_bill_id = $this->input->post('consumer_monthly_bill_id');
+    //     $consumer_monthly_bill_id = $this->input->post('consumer_monthly_bill_id');
 
-        if ($this->form_validation->run() == FALSE) {
-            echo '<div class="alert alert-danger">' . validation_errors() . "</div>";
-            exit();
-        } else {
-            $inputs = $this->get_payment_inputs();
-            $inputs->created_by = $this->session->userdata("userId");
-            $payment_id = (int) $this->input->post("payment_id");
-            if ($payment_id == 0) {
-                $this->db->insert("payments", $inputs);
-                $payment_id = $this->db->insert_id();
-            } else {
-                $this->db->where("payment_id", $payment_id);
-                $inputs->last_updated = date('Y-m-d H:i:s');
-                $this->db->update("payments", $inputs);
-            }
+    //     if ($this->form_validation->run() == FALSE) {
+    //         echo '<div class="alert alert-danger">' . validation_errors() . "</div>";
+    //         exit();
+    //     } else {
+    //         $inputs = $this->get_payment_inputs();
+    //         $inputs->created_by = $this->session->userdata("userId");
+    //         $payment_id = (int) $this->input->post("payment_id");
+    //         if ($payment_id == 0) {
+    //             $this->db->insert("payments", $inputs);
+    //             $payment_id = $this->db->insert_id();
+    //         } else {
+    //             $this->db->where("payment_id", $payment_id);
+    //             $inputs->last_updated = date('Y-m-d H:i:s');
+    //             $this->db->update("payments", $inputs);
+    //         }
 
-            $this->db->query("
-            UPDATE `consumer_monthly_bills`
-            SET `paid` = (
-            SELECT COALESCE(SUM(payments.amount_paid), 0)
-            FROM payments
-            WHERE payments.consumer_monthly_bill_id = `consumer_monthly_bills`.`consumer_monthly_bill_id`
-            )
-            WHERE `consumer_monthly_bills`.`consumer_monthly_bill_id` = $consumer_monthly_bill_id
-            ");
+    //         $this->db->query("
+    //         UPDATE `consumer_monthly_bills`
+    //         SET `paid` = (
+    //         SELECT COALESCE(SUM(payments.amount_paid), 0)
+    //         FROM payments
+    //         WHERE payments.consumer_monthly_bill_id = `consumer_monthly_bills`.`consumer_monthly_bill_id`
+    //         )
+    //         WHERE `consumer_monthly_bills`.`consumer_monthly_bill_id` = $consumer_monthly_bill_id
+    //         ");
 
-            //calculate dues 
-            $query = "SELECT MIN(payment_date) as p_date FROM payments WHERE payment_id = '" . $payment_id . "'";
-            $first_payment = $this->db->query($query)->row();
+    //         //calculate dues 
+    //         $query = "SELECT MIN(payment_date) as p_date FROM payments WHERE payment_id = '" . $payment_id . "'";
+    //         $first_payment = $this->db->query($query)->row();
 
-            // SQL Query to get the bill details
-            $query = "
-            SELECT 
-            billing_months.billing_due_date
-            FROM consumer_monthly_bills
-            INNER JOIN billing_months 
-            ON billing_months.billing_month_id = consumer_monthly_bills.billing_month_id
-            WHERE 
-            consumer_monthly_bills.consumer_monthly_bill_id = ? ";
-            $billing_due_date = $this->db->query($query, [$consumer_monthly_bill_id])->row()->billing_due_date;
+    //         // SQL Query to get the bill details
+    //         $query = "
+    //         SELECT 
+    //         billing_months.billing_due_date
+    //         FROM consumer_monthly_bills
+    //         INNER JOIN billing_months 
+    //         ON billing_months.billing_month_id = consumer_monthly_bills.billing_month_id
+    //         WHERE 
+    //         consumer_monthly_bills.consumer_monthly_bill_id = ? ";
+    //         $billing_due_date = $this->db->query($query, [$consumer_monthly_bill_id])->row()->billing_due_date;
 
-            if ($first_payment->p_date <= $billing_due_date) {
-                $query = "UPDATE `consumer_monthly_bills` SET `payable`= `payable_within_due_date` WHERE consumer_monthly_bill_id = ?";
-                $this->db->query($query, [$consumer_monthly_bill_id]);
-            } else {
-                $query = "UPDATE `consumer_monthly_bills` SET `payable`= `payable_after_due_date` WHERE consumer_monthly_bill_id = ?";
-                $this->db->query($query, [$consumer_monthly_bill_id]);
-            }
+    //         if ($first_payment->p_date <= $billing_due_date) {
+    //             $query = "UPDATE `consumer_monthly_bills` SET `payable`= `payable_within_due_date` WHERE consumer_monthly_bill_id = ?";
+    //             $this->db->query($query, [$consumer_monthly_bill_id]);
+    //         } else {
+    //             $query = "UPDATE `consumer_monthly_bills` SET `payable`= `payable_after_due_date` WHERE consumer_monthly_bill_id = ?";
+    //             $this->db->query($query, [$consumer_monthly_bill_id]);
+    //         }
 
-            //calcualte due
-            $query = "UPDATE `consumer_monthly_bills` SET `dues`= (`payable`-`paid`) WHERE consumer_monthly_bill_id = ?";
-            $this->db->query($query, [$consumer_monthly_bill_id]);
+    //         //calcualte due
+    //         $query = "UPDATE `consumer_monthly_bills` SET `dues`= (`payable`-`paid`) WHERE consumer_monthly_bill_id = ?";
+    //         $this->db->query($query, [$consumer_monthly_bill_id]);
 
 
-            $consumer_monthly_bill_id = (int) $this->input->post('consumer_monthly_bill_id');
+    //         $consumer_monthly_bill_id = (int) $this->input->post('consumer_monthly_bill_id');
 
-            echo "success";
-        }
-    }
+    //         echo "success";
+    //     }
+    // }
 }

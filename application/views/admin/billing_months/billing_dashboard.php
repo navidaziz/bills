@@ -9,7 +9,8 @@ $billing_month = $this->db->query($query)->row();
             <ul class="breadcrumb">
                 <li>
                     <i class="fa fa-home"></i>
-                    <a href="<?php echo site_url(ADMIN_DIR . $this->session->userdata("role_homepage_uri")); ?>"><?php echo $this->lang->line('Home'); ?></a>
+                    <a
+                        href="<?php echo site_url($this->session->userdata("role_homepage_uri")); ?>"><?php echo $this->lang->line('Home'); ?></a>
                 </li>
 
                 <li><?php echo $title; ?></li>
@@ -25,46 +26,64 @@ $billing_month = $this->db->query($query)->row();
 
                 <div class="col-md-8">
                     <?php if ($billing_month) { ?>
-                        <h5><?php echo $description; ?></h5>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th><?php echo $this->lang->line('meter_reading_start'); ?></th>
-                                    <th><?php echo $this->lang->line('meter_reading_end'); ?></th>
-                                    <th><?php echo $this->lang->line('billing_issue_date'); ?></th>
-                                    <th><?php echo $this->lang->line('billing_due_date'); ?></th>
-                                    <th><?php echo $this->lang->line('Status'); ?></th>
+                    <h5><?php echo $description; ?></h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th><?php echo $this->lang->line('meter_reading_start'); ?></th>
+                                <th><?php echo $this->lang->line('meter_reading_end'); ?></th>
+                                <th><?php echo $this->lang->line('billing_issue_date'); ?></th>
+                                <th><?php echo $this->lang->line('billing_due_date'); ?></th>
+                                <th><?php echo $this->lang->line('Status'); ?></th>
+                                <th>Meter Reading Summary</th>
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <?php echo $billing_month->meter_reading_start; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $billing_month->meter_reading_end; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $billing_month->billing_issue_date; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $billing_month->billing_due_date; ?>
-                                    </td>
-                                    <td>
-                                        <?php
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <?php echo $billing_month->meter_reading_start; ?>
+                                </td>
+                                <td>
+                                    <?php echo $billing_month->meter_reading_end; ?>
+                                </td>
+                                <td>
+                                    <?php echo $billing_month->billing_issue_date; ?>
+                                </td>
+                                <td>
+                                    <?php echo $billing_month->billing_due_date; ?>
+                                </td>
+                                <td>
+                                    <?php
                                         if ($billing_month->status == 1) {
                                             echo '<span class="label label-success">Active</span>';
                                         } else {
                                             echo '<span class="label label-danger">Closed</span>';
                                         }
                                         ?>
-                                    </td>
+                                </td>
+                                <td>
+                                    <?php 
+                                    $query="SELECT COUNT(*) as total FROM `consumers`
+                                            WHERE date(`consumers`.`date_of_registration`) <= ?;";
+                                    $consumer_till_now = $this->db->query($query,array($billing_month->billing_month."-1"))->row()->total; 
+                                    ?>
+                                    Consumers Upto <?php echo date("d M, Y", strtotime($billing_month->billing_month."-1")) ?> Total: <?php echo $consumer_till_now;?> <br />
+                                <?php 
 
-                                </tr>
+                                    $query="SELECT COUNT(*) as total FROM `consumers` as c 
+                                            RIGHT JOIN consumer_monthly_bills as cmb ON(cmb.consumer_id = c.consumer_id)
+                                            WHERE date(`c`.`date_of_registration`) <= ?
+                                            AND cmb.billing_month_id = ?;";
+                                    $reading_till_now = $this->db->query($query,array($billing_month->billing_month."-1", $billing_month->billing_month_id))->row()->total; 
+                                    ?>
+                                    M. Reading Complete  <?php echo $reading_till_now ?>  / <?php echo $consumer_till_now;?>
+                                </td>
 
-                            </tbody>
-                        </table>
+                            </tr>
+
+                        </tbody>
+                    </table>
                     <?php } ?>
                 </div>
 
@@ -75,23 +94,31 @@ $billing_month = $this->db->query($query)->row();
     </div>
 </div>
 <style>
-    .box .header-tabs .nav-tabs>li.active a,
-    .box .header-tabs .nav-tabs>li.active a:after,
-    .box .header-tabs .nav-tabs>li.active a:before {
-        background: #90EE8F;
-        z-index: 3;
-        color: black;
-        font-weight: bold;
-    }
+.box .header-tabs .nav-tabs>li.active a,
+.box .header-tabs .nav-tabs>li.active a:after,
+.box .header-tabs .nav-tabs>li.active a:before {
+    background: #90EE8F;
+    z-index: 3;
+    color: black;
+    font-weight: bold;
+}
 
-    .box .header-tabs .nav-tabs>li a,
-    .box .header-tabs .nav-tabs>li a:after,
-    .box .header-tabs .nav-tabs>li a:before {
-        background: #86B8E1;
-        z-index: 3;
-        color: black;
-        font-weight: bold;
-    }
+.box .header-tabs .nav-tabs>li a,
+.box .header-tabs .nav-tabs>li a:after,
+.box .header-tabs .nav-tabs>li a:before {
+    background: #86B8E1;
+    z-index: 3;
+    color: black;
+    font-weight: bold;
+}
+</style>
+<style>
+.round-button {
+    border-radius: 10px;
+    padding: 1px;
+    width: 20px;
+    height: 20px;
+}
 </style>
 <!-- PAGE MAIN CONTENT -->
 <div class="row">
@@ -121,30 +148,35 @@ $billing_month = $this->db->query($query)->row();
                         <?php
                         foreach ($months as $index => $month) {
                         ?>
-                            <li <?php if ($filter_month == date('m', strtotime($month))) {
+                        <li <?php if ($filter_month == date('m', strtotime($month))) {
                                     echo ' class="active" ';
                                 } ?>>
 
-                                <a href="<?php echo site_url(ADMIN_DIR . "billing_months/index") ?>?filter_year=<?php echo $filter_year; ?>&filter_month=<?php echo date('m', strtotime($month)); ?>" contenteditable="false" style="cursor: pointer; padding: 7px 8px;">
-                                    <span class="hidden-inline-mobile"><?php echo date('M, y', strtotime($month)); ?></span></a>
-                            </li>
+                            <a href="<?php echo site_url(ADMIN_DIR . "billing_months/index") ?>?filter_year=<?php echo $filter_year; ?>&filter_month=<?php echo date('m', strtotime($month)); ?>"
+                                contenteditable="false" style="cursor: pointer; padding: 7px 8px;">
+                                <span
+                                    class="hidden-inline-mobile"><?php echo date('M, y', strtotime($month)); ?></span></a>
+                        </li>
                         <?php } ?>
 
 
                         <li><?php $query = "SELECT LEFT(billing_month, 4)  as billing_year FROM `billing_months` GROUP BY billing_year";
                             $billing_years = $this->db->query($query)->result();
                             ?>
-                            <select onchange="reloadPage()" id="filter_year" class="form-control" style="width: 120px; display:inline !important; margin-right:30px; height:30px">
+                            <select onchange="reloadPage()" id="filter_year" class="form-control"
+                                style="width: 120px; display:inline !important; margin-right:30px; height:30px">
                                 <?php
                                 foreach ($billing_years as $billing_year) { ?>
-                                    <option <?php if ($billing_year->billing_year == $filter_year) { ?> selected <?php } ?> value="?filter_year=<?php echo $billing_year->billing_year; ?>"><?php echo $billing_year->billing_year; ?></option>
+                                <option <?php if ($billing_year->billing_year == $filter_year) { ?> selected <?php } ?>
+                                    value="?filter_year=<?php echo $billing_year->billing_year; ?>">
+                                    <?php echo $billing_year->billing_year; ?></option>
                                 <?php } ?>
                             </select>
                             <script>
-                                function reloadPage() {
-                                    var year = document.getElementById("filter_year").value;
-                                    window.location.href = year;
-                                }
+                            function reloadPage() {
+                                var year = document.getElementById("filter_year").value;
+                                window.location.href = year;
+                            }
                             </script>
                         </li>
 
@@ -158,42 +190,43 @@ $billing_month = $this->db->query($query)->row();
                                     if ($billing_month) {
                                     ?>
 
-                                        <div class="table-responsive" style=" overflow-x:auto;">
+                                    <div class="table-responsive" style=" overflow-x:auto;">
 
-                                            <table class="table table-bordered table_small" id="monthly_bill">
-                                                <thead>
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th><?php echo $this->lang->line('consumer_cnic'); ?></th>
-                                                        <th><?php echo $this->lang->line('consumer_name'); ?></th>
-                                                        <th><?php echo $this->lang->line('consumer_father_name'); ?></th>
-                                                        <th><?php echo $this->lang->line('consumer_contact_no'); ?></th>
-                                                        <th><?php echo $this->lang->line('consumer_address'); ?></th>
-                                                        <th><?php echo $this->lang->line('consumer_meter_no'); ?></th>
-                                                        <th><?php echo $this->lang->line('date_of_registration'); ?></th>
-                                                        <th><?php echo $this->lang->line('tariff_type'); ?></th>
+                                        <table class="table table-bordered table_small" id="monthly_bill">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th><?php echo $this->lang->line('consumer_cnic'); ?></th>
+                                                    <th><?php echo $this->lang->line('consumer_name'); ?></th>
+                                                    <th><?php echo $this->lang->line('consumer_father_name'); ?></th>
+                                                    <th><?php echo $this->lang->line('consumer_contact_no'); ?></th>
+                                                    <th><?php echo $this->lang->line('consumer_address'); ?></th>
+                                                    <th><?php echo $this->lang->line('consumer_meter_no'); ?></th>
+                                                    <th><?php echo $this->lang->line('date_of_registration'); ?></th>
+                                                    <th><?php echo $this->lang->line('tariff_type'); ?></th>
 
-                                                        <th>Reading Date</th>
-                                                        <th>Last Reading</th>
-                                                        <th>Current Reading</th>
-                                                        <th>Unit Cosumed</th>
-                                                        <th>Rate</th>
-                                                        <th>Total</th>
-                                                        <th>Monthly SC</th>
-                                                        <th>Tax(%)</th>
-                                                        <th>Tax Rs</th>
-                                                        <th>Arrears</th>
-                                                        <th>Payable Within Due Date</th>
-                                                        <th>Payable After Due Date</th>
-                                                        <th>Paid</th>
-                                                        <th>Dues</th>
-                                                        <th class='notexport'>M. Reading</th>
-                                                        <th class='notexport'>View</th>
-                                                        <th class='notexport'>Print</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php
+                                                    <th>Reading Date</th>
+                                                    <th>Last Reading</th>
+                                                    <th>Current Reading</th>
+                                                    <th>Unit Cosumed</th>
+                                                    <th>Rate</th>
+                                                    <th>Total</th>
+                                                    <th>Monthly SC</th>
+                                                    <th>Tax(%)</th>
+                                                    <th>Tax Rs</th>
+                                                    <th>Arrears</th>
+                                                    <th>Payable Within Due Date</th>
+                                                    <th>Fine</th>
+                                                    <th>Payable After Due Date</th>
+                                                    <th>Paid</th>
+                                                    <th>Dues</th>
+                                                    <th class='notexport'>M. Reading</th>
+                                                    <th class='notexport'>View</th>
+                                                    <th class='notexport'>Print</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
 
                                                     $count = 1;
                                                     $query = "SELECT consumers.*, tariffs.tariff_type FROM consumers 
@@ -203,38 +236,38 @@ $billing_month = $this->db->query($query)->row();
 
                                                     foreach ($consumers as $consumer) : ?>
 
-                                                        <tr>
+                                                <tr>
 
-                                                            <td>
-                                                                <?php echo $count++; ?>
-                                                            </td>
+                                                    <td>
+                                                        <?php echo $count++; ?>
+                                                    </td>
 
-                                                            <td>
-                                                                <?php echo $consumer->consumer_cnic; ?>
-                                                            </td>
-                                                            <td>
-                                                                <?php echo $consumer->consumer_name; ?>
-                                                            </td>
-                                                            <td>
-                                                                <?php echo $consumer->consumer_father_name; ?>
-                                                            </td>
-                                                            <td>
-                                                                <?php echo $consumer->consumer_contact_no; ?>
-                                                            </td>
-                                                            <td>
-                                                                <?php echo $consumer->consumer_address; ?>
-                                                            </td>
-                                                            <td>
-                                                                <?php echo $consumer->consumer_meter_no; ?>
-                                                            </td>
-                                                            <td>
-                                                                <?php echo date("d M, y", strtotime($consumer->date_of_registration)); ?>
-                                                            </td>
-                                                            <td>
-                                                                <?php echo $consumer->tariff_type; ?>
-                                                            </td>
+                                                    <td>
+                                                        <?php echo $consumer->consumer_cnic; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo $consumer->consumer_name; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo $consumer->consumer_father_name; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo $consumer->consumer_contact_no; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo $consumer->consumer_address; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo $consumer->consumer_meter_no; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo date("d M, y", strtotime($consumer->date_of_registration)); ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo $consumer->tariff_type; ?>
+                                                    </td>
 
-                                                            <?php
+                                                    <?php
                                                             if ($billing_month) {
                                                                 $query = "SELECT * FROM consumer_monthly_bills
                                                                 WHERE  billing_month_id = '" . $billing_month->billing_month_id . "'
@@ -247,74 +280,92 @@ $billing_month = $this->db->query($query)->row();
                                                             ?>
 
 
-                                                                <td><?php echo date("d M, y", strtotime($row->reading_date)); ?></td>
-                                                                <td><?php echo $row->last_reading; ?></td>
-                                                                <td><?php echo $row->current_reading; ?></td>
-                                                                <td><?php echo $row->unit_cosumed; ?></td>
-                                                                <td><?php echo $row->rate; ?></td>
-                                                                <td><?php echo $row->total; ?></td>
-                                                                <td><?php echo $row->monthly_service_charges; ?></td>
-                                                                <td><?php echo $row->tax_per; ?>%</td>
-                                                                <td><?php echo $row->tax_rs; ?></td>
-                                                                <td><?php echo $row->last_month_arrears; ?></td>
-                                                                <td><?php echo $row->payable_within_due_date; ?></td>
-                                                                <td><?php echo $row->payable_after_due_date; ?></td>
-                                                                <td><?php echo $row->paid; ?></td>
-                                                                <td><?php echo $row->dues; ?></td>
+                                                    <td><?php echo date("d M, y", strtotime($row->reading_date)); ?>
+                                                    </td>
+                                                    <td><?php echo $row->last_reading; ?></td>
+                                                    <td><?php echo $row->current_reading; ?></td>
+                                                    <td><?php echo $row->unit_cosumed; ?></td>
+                                                    <td><?php echo $row->rate; ?></td>
+                                                    <td><?php echo $row->total; ?></td>
+                                                    <td><?php echo $row->monthly_service_charges; ?></td>
+                                                    <td><?php echo $row->tax_per; ?>%</td>
+                                                    <td><?php echo $row->tax_rs; ?></td>
+                                                    <td><?php echo $row->last_month_arrears; ?></td>
+                                                    <td><?php echo $row->payable_within_due_date; ?></td>
+                                                    <td><?php echo $row->late_deposit_fine; ?></td>
+                                                    <td><?php echo $row->payable_after_due_date; ?></td>
+                                                    <td><?php echo $row->paid; ?></td>
+                                                    <td><?php echo $row->dues; ?></td>
+                                                    <?php } else { ?>
+                                                    <td></td>
+
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+
+                                                    <?php } ?>
+                                                    <td class='notexport'>
+                                                        <?php if ($row) { ?>
+                                                        <button class="btn round-button btn-success  btn-sm "
+                                                            onclick="get_comsumer_monthly_bill_form(<?php echo $row->consumer_monthly_bill_id ?>, '<?php echo $billing_month->billing_month_id ?>', <?php echo $consumer->consumer_id; ?>)"><i
+                                                                class="fa fa-edit"></i></botton>
                                                             <?php } else { ?>
-                                                                <td></td>
+                                                            <button class="btn round-button btn-danger  btn-sm "
+                                                                onclick="get_comsumer_monthly_bill_form('0', '<?php echo $billing_month->billing_month_id ?>', <?php echo $consumer->consumer_id; ?>)"><i
+                                                                    class="fa fa-plus"></i></botton>
 
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-
-                                                            <?php } ?>
-                                                            <td class='notexport'>
-                                                                <?php if ($row) { ?>
-                                                                    <button onclick="get_comsumer_monthly_bill_form(<?php echo $row->consumer_monthly_bill_id ?>, '<?php echo $billing_month->billing_month_id ?>', <?php echo $consumer->consumer_id; ?>)">Edit Reading</botton>
-                                                                    <?php } else { ?>
-                                                                        <button onclick="get_comsumer_monthly_bill_form('0', '<?php echo $billing_month->billing_month_id ?>', <?php echo $consumer->consumer_id; ?>)">Add Reading</botton>
-
-                                                                        <?php } ?>
-                                                            </td>
-                                                            <td class='notexport'>
-                                                                <?php if ($row) { ?>
-                                                                    <a href="<?php echo site_url(ADMIN_DIR . "billing_months/view_billing_month/" . $billing_month->billing_month_id . "/" . $consumer->consumer_id . "/" . $row->consumer_monthly_bill_id); ?>"><button>View</button> </a>
                                                                 <?php } ?>
+                                                    </td>
+                                                    <td class='notexport'>
+                                                        <?php if ($row) { ?>
+                                                        <a
+                                                            href="<?php echo site_url(ADMIN_DIR . "billing_months/view_billing_month/" . $billing_month->billing_month_id . "/" . $consumer->consumer_id . "/" . $row->consumer_monthly_bill_id); ?>"><button
+                                                                class="btn round-button btn-warning  btn-sm "><i
+                                                                    class="fa fa-eye"></i></button> </a>
+                                                        <?php } ?>
 
-                                                            </td>
-                                                            <td class='notexport'>
-                                                                <?php if ($row) { ?>
-                                                                    <a target="_blank" href="<?php echo site_url(ADMIN_DIR . "billing_months/print_billing_month/" . $billing_month->billing_month_id . "/" . $consumer->consumer_id . "/" . $row->consumer_monthly_bill_id); ?>"><button>Print</button> </a>
-                                                                <?php } ?>
+                                                    </td>
+                                                    <td class='notexport'>
+                                                        <?php if ($row) { ?>
+                                                        <a target="_blank"
+                                                            href="<?php echo site_url(ADMIN_DIR . "billing_months/print_billing_month/" . $billing_month->billing_month_id . "/" . $consumer->consumer_id . "/" . $row->consumer_monthly_bill_id); ?>"><button
+                                                                class="btn round-button btn-primary  btn-sm "><i
+                                                                    class="fa fa-print"></i></button> </a>
+                                                        <?php } ?>
 
-                                                            </td>
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
+                                                    </td>
+                                                </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
 
 
 
-                                        </div>
+                                    </div>
 
                                     <?php } else { ?>
-                                        <div style="text-align: center;">
-                                            <h1>Please Add Billing Month For <?php echo date("M, Y", strtotime($BillingMonth . "-1")); ?></h1>
-                                            <div>
-                                                <a class="btn btn-primary btn-sm" href="<?php echo site_url(ADMIN_DIR . "billing_months/add"); ?>"><i class="fa fa-plus"></i> Create Monthly Bill For <?php echo date("M, Y", strtotime($BillingMonth . "-1")); ?></a>
-                                            </div>
+                                    <div style="text-align: center;">
+                                        <h1>Please Add Billing Month For
+                                            <?php echo date("M, Y", strtotime($BillingMonth . "-1")); ?></h1>
+                                        <div>
+                                            <a class="btn btn-primary btn-sm"
+                                                href="<?php echo site_url(ADMIN_DIR . "billing_months/add"); ?>"><i
+                                                    class="fa fa-plus"></i> Create Billing Month For
+                                                <?php echo date("M, Y", strtotime($BillingMonth . "-1")); ?></a>
                                         </div>
+                                    </div>
+                                   
                                     <?php } ?>
                                 </div>
 
@@ -334,113 +385,115 @@ $billing_month = $this->db->query($query)->row();
 
 
 <script>
-    function get_comsumer_monthly_bill_form(consumer_monthly_bill_id, billing_month_id, consumer_id) {
-        $.ajax({
-                method: "POST",
-                url: "<?php echo site_url(ADMIN_DIR . 'consumer_monthly_bills/get_comsumer_monthly_bill_form'); ?>",
-                data: {
-                    consumer_monthly_bill_id: consumer_monthly_bill_id,
-                    consumer_id: consumer_id,
-                    billing_month_id: billing_month_id
-                },
-            })
-            .done(function(respose) {
-                $('#modal').modal('show');
+function get_comsumer_monthly_bill_form(consumer_monthly_bill_id, billing_month_id, consumer_id) {
+    $.ajax({
+            method: "POST",
+            url: "<?php echo site_url(ADMIN_DIR . 'consumer_monthly_bills/get_comsumer_monthly_bill_form'); ?>",
+            data: {
+                consumer_monthly_bill_id: consumer_monthly_bill_id,
+                consumer_id: consumer_id,
+                billing_month_id: billing_month_id
+            },
+        })
+        .done(function(respose) {
+            $('#modal').modal('show');
 
-                $('#modal_title').html('Comsumer Monthly Bills');
-                $('#modal_body').html(respose);
+            $('#modal_title').html('Comsumer Monthly Bills');
+            $('#modal_body').html(respose);
 
 
-            });
-    }
+        });
+}
 </script>
 
 
 
 <script>
-    title = "Consumers Bills <?php echo $description . " Date: " . date("d-m-y h:m:s"); ?>";
-    $(document).ready(function() {
-        $('#monthly_bill').DataTable({
-            dom: 'Bfrtip',
-            paging: false,
-            title: title,
-            "order": [],
-            searching: true,
-            buttons: [
+title = "Consumers Bills <?php echo $description . " Date: " . date("d-m-y h:m:s"); ?>";
+$(document).ready(function() {
+    $('#monthly_bill').DataTable({
+        dom: 'Bfrtip',
+        paging: false,
+        title: title,
+        "order": [],
+        searching: true,
+        buttons: [
 
-                {
-                    extend: 'print',
-                    title: title,
-                    orientation: 'landscape',
-                    exportOptions: {
-                        columns: ':not(.notexport)'
-                    }
-                },
-                {
-                    extend: 'excelHtml5',
-                    title: title,
-                    exportOptions: {
-                        columns: ':not(.notexport)'
-                    }
-
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: title,
-                    // pageSize: {
-                    //     width: 1000, // Width in points (12 inches)
-                    //     height: 800 // Height in points (18 inches)
-                    // },
-                    exportOptions: {
-                        columns: ':not(.notexport)'
-                    },
-                    orientation: 'landscape',
-                    customize: function(doc) {
-                        var tableHeader = doc.content[1].table.headerRows ? doc.content[1].table.body[0] : null;
-
-                        // Minimize padding and margins
-                        doc.pageMargins = [10, 10, 10, 10]; // Set all margins to 10 units
-
-                        // Adjust the font size for the entire document
-                        doc.defaultStyle.fontSize = 4; // Reduce overall font size
-
-                        // Adjust the header font size and make them bold
-                        if (tableHeader) {
-                            tableHeader.forEach(function(headerCell) {
-                                headerCell.fontSize = 4; // Set header font size
-                                headerCell.bold = true; // Make headers bold
-                            });
-                        }
-
-                        // Autofit the table to the page width
-                        doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
-
-                        // Optional: Remove table borders if needed and minimize padding
-                        doc.content[1].layout = {
-                            paddingTop: function() {
-                                return 2;
-                            },
-                            paddingBottom: function() {
-                                return 2;
-                            },
-                            paddingLeft: function() {
-                                return 2;
-                            },
-                            paddingRight: function() {
-                                return 2;
-                            },
-                            hLineWidth: function() {
-                                return 0;
-                            }, // Hide horizontal lines
-                            vLineWidth: function() {
-                                return 0;
-                            } // Hide vertical lines
-                        };
-                    }
+            {
+                extend: 'print',
+                title: title,
+                orientation: 'landscape',
+                exportOptions: {
+                    columns: ':not(.notexport)'
+                }
+            },
+            {
+                extend: 'excelHtml5',
+                title: title,
+                exportOptions: {
+                    columns: ':not(.notexport)'
                 }
 
+            },
+            {
+                extend: 'pdfHtml5',
+                title: title,
+                // pageSize: {
+                //     width: 1000, // Width in points (12 inches)
+                //     height: 800 // Height in points (18 inches)
+                // },
+                exportOptions: {
+                    columns: ':not(.notexport)'
+                },
+                orientation: 'landscape',
+                customize: function(doc) {
+                    var tableHeader = doc.content[1].table.headerRows ? doc.content[1].table
+                        .body[0] : null;
 
-            ]
-        });
+                    // Minimize padding and margins
+                    doc.pageMargins = [10, 10, 10, 10]; // Set all margins to 10 units
+
+                    // Adjust the font size for the entire document
+                    doc.defaultStyle.fontSize = 4; // Reduce overall font size
+
+                    // Adjust the header font size and make them bold
+                    if (tableHeader) {
+                        tableHeader.forEach(function(headerCell) {
+                            headerCell.fontSize = 4; // Set header font size
+                            headerCell.bold = true; // Make headers bold
+                        });
+                    }
+
+                    // Autofit the table to the page width
+                    doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1)
+                        .join('*').split('');
+
+                    // Optional: Remove table borders if needed and minimize padding
+                    doc.content[1].layout = {
+                        paddingTop: function() {
+                            return 2;
+                        },
+                        paddingBottom: function() {
+                            return 2;
+                        },
+                        paddingLeft: function() {
+                            return 2;
+                        },
+                        paddingRight: function() {
+                            return 2;
+                        },
+                        hLineWidth: function() {
+                            return 0;
+                        }, // Hide horizontal lines
+                        vLineWidth: function() {
+                            return 0;
+                        } // Hide vertical lines
+                    };
+                }
+            }
+
+
+        ]
     });
+});
 </script>

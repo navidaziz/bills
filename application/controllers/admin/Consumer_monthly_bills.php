@@ -160,7 +160,8 @@ class Consumer_monthly_bills extends Admin_Controller
             $payable = $total + $consumer_monthly_bill->monthly_service_charges + $tax + $consumer_monthly_bill->last_month_arrears;
             $input["payable"] = $payable;
             $input["payable_within_due_date"] = $payable;
-            $input["payable_after_due_date"] = $payable * (1 + $consumer_monthly_bill->late_deposit_fine / 100);
+            $input["late_deposit_fine"] = $consumer_monthly_bill->late_deposit_fine;
+            $input["payable_after_due_date"] = $payable + $consumer_monthly_bill->late_deposit_fine;
 
             $input["paid"] = 0;
             $input["dues"] = 0;

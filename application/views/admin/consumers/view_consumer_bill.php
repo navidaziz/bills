@@ -9,11 +9,13 @@
             <ul class="breadcrumb">
                 <li>
                     <i class="fa fa-home"></i>
-                    <a href="<?php echo site_url(ADMIN_DIR . $this->session->userdata("role_homepage_uri")); ?>"><?php echo $this->lang->line('Home'); ?></a>
+                    <a
+                        href="<?php echo site_url(ADMIN_DIR . $this->session->userdata("role_homepage_uri")); ?>"><?php echo $this->lang->line('Home'); ?></a>
                 </li>
                 <li>
                     <i class="fa fa-table"></i>
-                    <a href="<?php echo site_url(ADMIN_DIR . "consumers/view/"); ?>"><?php echo $this->lang->line('Consumers'); ?></a>
+                    <a
+                        href="<?php echo site_url(ADMIN_DIR . "consumers/view/"); ?>"><?php echo $this->lang->line('Consumers'); ?></a>
                 </li>
                 <li><?php echo $title; ?></li>
             </ul>
@@ -107,7 +109,8 @@
     <div class="col-md-4">
         <div class="box border blue" id="messenger">
             <div class="box-title">
-                <h4><i class="fa fa-bolt"></i> <?php echo date('M', strtotime($row->billing_month)); ?>, <?php echo date('Y', strtotime($row->billing_month)); ?> Bill Detail</h4>
+                <h4><i class="fa fa-bolt"></i> <?php echo date('M', strtotime($row->billing_month)); ?>,
+                    <?php echo date('Y', strtotime($row->billing_month)); ?> Bill Detail</h4>
             </div>
             <div class="box-body">
 
@@ -174,40 +177,46 @@
         <div class="box border blue" id="messenger">
             <div class="box-title">
                 <h4><i class="fa fa-money" aria-hidden="true"></i>
-                    <?php echo date('M', strtotime($row->billing_month)); ?>, <?php echo date('Y', strtotime($row->billing_month)); ?> Bill Payable and Payments</h4>
+                    <?php echo date('M', strtotime($row->billing_month)); ?>,
+                    <?php echo date('Y', strtotime($row->billing_month)); ?> Bill Payable and Payments</h4>
             </div>
             <div class="box-body">
 
                 <div class="table-responsive">
 
                     <div class="table-responsive">
-                        <h4><?php echo date('M', strtotime($row->billing_month)); ?>, <?php echo date('Y', strtotime($row->billing_month)); ?> Payalbes</h4>
+                        <h4><?php echo date('M', strtotime($row->billing_month)); ?>,
+                            <?php echo date('Y', strtotime($row->billing_month)); ?> Payalbes</h4>
 
                         <hr />
                         <style>
-                            .payable_table>thead>tr>th,
-                            .payable_table>tbody>tr>th,
-                            .payable_table>tfoot>tr>th,
-                            .payable_table>thead>tr>td,
-                            .payable_table>tbody>tr>td,
-                            .payable_table>tfoot>tr>td {
-                                border-color: black;
-                                color: black !important;
+                        .payable_table>thead>tr>th,
+                        .payable_table>tbody>tr>th,
+                        .payable_table>tfoot>tr>th,
+                        .payable_table>thead>tr>td,
+                        .payable_table>tbody>tr>td,
+                        .payable_table>tfoot>tr>td {
+                            border-color: black;
+                            color: black !important;
 
-                            }
+                        }
                         </style>
                         <table class="table table-bordered payable_table" id="consumer_monthly_bills_transposed">
                             <tbody>
 
                                 <tr>
-                                    <th style="background-color: lightgreen;">Payable Within Due Date: (<?php echo date("d M, Y", strtotime($row->billing_due_date)); ?>)</th>
-                                    <th style="background-color: lightcoral;">Payable After Due Date (After <?php echo date("d M, Y", strtotime($row->billing_due_date)); ?>)</th>
+                                    <th style="background-color: lightgreen;">Payable Within Due Date:
+                                        (<?php echo date("d M, Y", strtotime($row->billing_due_date)); ?>)</th>
+                                    <th style="background-color: lightcoral;">Payable After Due Date (After
+                                        <?php echo date("d M, Y", strtotime($row->billing_due_date)); ?>)</th>
                                     <th style="background-color: #A8BB7B;">Paid</th>
                                     <th style="background-color: #F74448;">Dues</th>
                                 </tr>
                                 <tr>
-                                    <td style=" background-color: lightgreen;"><?php echo $row->payable_within_due_date; ?></td>
-                                    <td style="background-color: lightcoral;"><?php echo $row->payable_after_due_date; ?></td>
+                                    <td style=" background-color: lightgreen;">
+                                        <?php echo $row->payable_within_due_date; ?></td>
+                                    <td style="background-color: lightcoral;">
+                                        <?php echo $row->payable_after_due_date; ?></td>
                                     <td style="background-color: #A8BB7B;"><?php echo $row->paid; ?></td>
                                     <td style="background-color: #F74448;"><?php echo $row->dues; ?></td>
                                 </tr>
@@ -215,7 +224,8 @@
                             </tbody>
                         </table>
 
-                        <h4><?php echo date('M', strtotime($row->billing_month)); ?>, <?php echo date('Y', strtotime($row->billing_month)); ?> Payments</h4>
+                        <h4><?php echo date('M', strtotime($row->billing_month)); ?>,
+                            <?php echo date('Y', strtotime($row->billing_month)); ?> Payments</h4>
 
                         <hr />
                         <table class="table table-bordered" id="payments">
@@ -237,24 +247,23 @@
                                 $rows = $this->db->query($query)->result();
                                 if ($rows) {
                                     foreach ($rows as $row) { ?>
-                                        <tr>
-                                            <td><a href="<?php echo site_url(ADMIN_DIR . 'consumers/delete_payment/' . $row->payment_id); ?>" onclick="return confirm('Are you sure? you want to delete the record.')">Delete</a> </td>
-                                            <td><?php echo $count++ ?></td>
-                                            <td><?php echo $row->payment_date; ?></td>
-                                            <td><?php echo $row->amount_paid; ?></td>
-                                            <td><?php echo $row->payment_method; ?></td>
-                                            <td><?php echo $row->notes; ?></td>
-                                            <td>
-                                                <buttonn class="btn btn-success" onclick="get_payments('<?php echo $row->payment_id; ?>')">Edit Payment<botton>
-                                            </td>
-                                        </tr>
-                                    <?php }
+                                <tr>
+                                    <td></td>
+                                    <td><?php echo $count++ ?></td>
+                                    <td><?php echo $row->payment_date; ?></td>
+                                    <td><?php echo $row->amount_paid; ?></td>
+                                    <td><?php echo $row->payment_method; ?></td>
+                                    <td><?php echo $row->notes; ?></td>
+                                    <td>
+                                    </td>
+                                </tr>
+                                <?php }
                                 } else { ?>
-                                    <tr>
-                                        <td colspan="7" style="text-align: center;">
-                                            <button onclick="get_payments('0')" class="btn btn-danger">Add Payment</button>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">
+
+                                    </td>
+                                </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -268,78 +277,3 @@
 
     </div>
 </div>
-
-
-<script>
-    function get_payments(payment_id) {
-        $.ajax({
-                method: "POST",
-                url: "<?php echo site_url(ADMIN_DIR . 'consumers/get_payments'); ?>",
-                data: {
-                    payment_id: payment_id,
-                    consumer_monthly_bill_id: <?php echo $consumer_monthly_bill_id ?>
-                },
-            })
-            .done(function(respose) {
-                // $('#modal').on('shown.bs.modal', function() {
-                //     // Set the width of the modal dialog to 70% after the modal is fully shown
-                //     $('.modal-dialog').css('width', '70%');
-                // });
-                // $('.modal-dialog').css('width', '70%');
-                $('#modal').modal('show');
-                $('#modal_title').html('Bill Payments');
-                $('#modal_body').html(respose);
-                $('.modal-dialog').css('width', '70% !important');
-            });
-    }
-
-    // function get_comsumer_monthly_bill_form(consumer_monthly_bill_id, billing_month_id) {
-    //     $.ajax({
-    //             method: "POST",
-    //             url: "<?php echo site_url(ADMIN_DIR . 'consumer_monthly_bills/get_comsumer_monthly_bill_form'); ?>",
-    //             data: {
-    //                 consumer_monthly_bill_id: consumer_monthly_bill_id,
-    //                 consumer_id: <?php echo $consumer->consumer_id; ?>,
-    //                 billing_month_id: billing_month_id
-    //             },
-    //         })
-    //         .done(function(respose) {
-    //             $('#modal').modal('show');
-
-    //             $('#modal_title').html('Comsumer Monthly Bills');
-    //             $('#modal_body').html(respose);
-
-
-    //         });
-    // }
-
-
-    title = "<?php echo $title; ?>";
-    $(document).ready(function() {
-        $('#consumer_monthly_bills').DataTable({
-            dom: 'Bfrtip',
-            paging: false,
-            title: title,
-            "order": [],
-            searching: true,
-            buttons: [
-
-                {
-                    extend: 'print',
-                    title: title,
-                },
-                {
-                    extend: 'excelHtml5',
-                    title: title,
-
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: title,
-                    pageSize: 'A4',
-
-                }
-            ]
-        });
-    });
-</script>
