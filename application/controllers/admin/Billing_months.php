@@ -355,20 +355,20 @@ class Billing_months extends Admin_Controller
             } else {
 
 
-                $query = "SELECT billing_month FROM billing_months WHERE status=1";
-                $active_month = $this->db->query($query)->row()->billing_month;
-                $billing_month = $this->input->post('billing_month');
+                // $query = "SELECT billing_month FROM billing_months WHERE status=1";
+                // $active_month = $this->db->query($query)->row()->billing_month;
+                // $billing_month = $this->input->post('billing_month');
 
-                // Calculate the next month after the active month
-                $next_month = date("Y-m", strtotime($active_month . " +1 month"));
+                // // Calculate the next month after the active month
+                // $next_month = date("Y-m", strtotime($active_month . " +1 month"));
 
-                // Check if the billing month is exactly equal to the next month
-                if ($billing_month == $next_month) {
-                    // Code to add the billing month to the database or perform the desired action
-                    echo "Billing month is valid and added successfully.";
-                } else {
-                    echo "Billing month must be exactly one month after the active month (" . date("M, Y", strtotime($active_month)) . ").";
-                }
+                // // Check if the billing month is exactly equal to the next month
+                // if ($billing_month == $next_month) {
+                //     // Code to add the billing month to the database or perform the desired action
+                //     echo "Billing month is valid and added successfully.";
+                // } else {
+                //     echo "Billing month must be exactly one month after the active month (" . date("M, Y", strtotime($active_month)) . ").";
+                // }
 
 
 
