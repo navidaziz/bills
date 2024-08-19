@@ -9,7 +9,7 @@
 			<ul class="breadcrumb">
 				<li>
 					<i class="fa fa-home"></i>
-					<a href="<?php echo site_url(ADMIN_DIR.$this->session->userdata("role_homepage_uri")); ?>"><?php echo $this->lang->line('Home'); ?></a>
+					<a href="<?php echo site_url($this->session->userdata("role_homepage_uri")); ?>"><?php echo $this->lang->line('Home'); ?></a>
 				</li><li><?php echo $title; ?></li>
 			</ul>
 			<!-- /BREADCRUMBS -->
