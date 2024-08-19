@@ -74,7 +74,7 @@
                     <table class="table table-bordered" id="billing_months">
                         <thead>
                             <tr>
-                                <th></th>
+                                <!-- <th></th> -->
                                 <th>#</th>
                                 <th>Billing Month</th>
                                 <th>Meter Reading Start</th>
@@ -92,9 +92,9 @@
                 $rows = $this->db->query($query)->result();
                 foreach ($rows as $row) { ?>
                             <tr>
-                                <td><a href="<?php echo site_url(ADMIN_DIR . 'billing_months/delete_billing_months/' . $row->billing_month_id); ?>"
+                                <!-- <td><a href="<?php echo site_url(ADMIN_DIR . 'billing_months/delete_billing_months/' . $row->billing_month_id); ?>"
                                         onclick="return confirm('Are you sure? you want to delete the record.')">Delete</a>
-                                </td>
+                                </td> -->
                                 <td><?php echo $count++ ?></td>
                                 <td><?php echo $row->billing_month; ?></td>
                                 <td><?php echo $row->meter_reading_start; ?></td>

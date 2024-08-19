@@ -380,12 +380,18 @@ class Billing_months extends Admin_Controller
         $billing_month_id = (int) $this->input->post("billing_month_id");
                 if ($billing_month_id == 0) {
                     $this->db->insert("billing_months", $inputs);
+                    $billing_month_id = $this->db->insert_id(); 
 
                 } else {
                     $this->db->where("billing_month_id", $billing_month_id); 
                     $inputs->last_updated = date('Y-m-d H:i:s');
                     $this->db->update("billing_months", $inputs);
                 }
+                    $status['status'] = 0;
+                    $this->db->update("billing_months", $status);
+                    $this->db->where("billing_month_id", $billing_month_id); 
+                    $status['status'] = 1;
+                    $this->db->update("billing_months", $status);
                 echo "success";
             }
         }
