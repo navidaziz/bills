@@ -76,7 +76,11 @@ class Consumer_monthly_bills extends Admin_Controller
             $input["last_month_arrears"] = $previous_month_record->dues;
         } else {
             $input["last_reading"] = $this->input->post("last_reading");
-            $input["last_month_arrears"] = $this->input->post("last_month_arrears") ?? 0;
+            if($this->input->post("last_month_arrears")){
+            $input["last_month_arrears"] = $this->input->post("last_month_arrears");
+            }else{
+               $input["last_month_arrears"] = 0; 
+            }
         }
 
         $input["reading_date"] = $this->input->post("reading_date");
