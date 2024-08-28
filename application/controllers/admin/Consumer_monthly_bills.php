@@ -125,19 +125,37 @@ class Consumer_monthly_bills extends Admin_Controller
         $this->form_validation->set_rules("current_reading", "Current Reading", "required");
         $this->form_validation->set_rules("reading_date", "Reading Date", "required");
 
+
+
+
         if ($this->form_validation->run() == FALSE) {
             echo '<div class="alert alert-danger">' . validation_errors() . "</div>";
             exit();
         } else {
 
+
+
+
             $inputs = $this->get_inputs();
+
+
+
             if ($inputs->current_reading <= $inputs->last_reading) {
                 echo '<div class="alert alert-danger">Meter Reading Error: The current reading must be greater than or equal to the previous reading (' . $inputs->last_reading . ')</div>';
                 exit();
             }
             $inputs->created_by = $this->session->userdata("userId");
             $consumer_monthly_bill_id = (int) $this->input->post("consumer_monthly_bill_id");
+
             if ($consumer_monthly_bill_id == 0) {
+                //check duplicate entery
+                $query="SELECT COUNT(*) as total FROM consumer_monthly_bills 
+                WHERE billing_month_id = ? AND consumer_id = ?";
+                $duplicate = $this->db->query($query, array($inputs->billing_month_id, $inputs->consumer_id))->row()->total;
+                if($duplicate>0){
+                echo '<div class="alert alert-danger">Data Already Added. Refresh and Update Data</div>';
+                exit(); 
+                }
                 $this->db->insert("consumer_monthly_bills", $inputs);
                 $consumer_monthly_bill_id = $this->db->insert_id();
             } else {
