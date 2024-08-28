@@ -105,7 +105,10 @@ class Consumer_monthly_bills extends Admin_Controller
     public function get_comsumer_monthly_bill_form()
     {
 
+        
         $consumer_monthly_bill_id = (int) $this->input->post("consumer_monthly_bill_id");
+
+        
 
         if ($consumer_monthly_bill_id == 0) {
             $input = $this->get_inputs();
@@ -116,6 +119,14 @@ class Consumer_monthly_bills extends Admin_Controller
             $input = $this->db->query($query)->row();
         }
         $this->data["input"] = $input;
+        $consumer_id = (int) $this->input->post("consumer_id");
+        $query="SELECT * FROM consumers WHERE consumer_id = ?";
+        $this->data['consumer']=$this->db->query($query, array($consumer_id))->row();
+        
+
+        $billing_month_id = (int) $this->input->post("billing_month_id");
+        $query="SELECT * FROM billing_months WHERE billing_month_id = ?";
+        $this->data['billing_month'] =$this->db->query($query, array($billing_month_id))->row();
         $this->load->view(ADMIN_DIR . "consumer_monthly_bills/get_comsumer_monthly_bill_form", $this->data);
     }
 
