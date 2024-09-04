@@ -191,11 +191,6 @@
         -moz-box-sizing: border-box;
     }
 
-    
-    tr {
-        border: 1px solid #78578e;
-    }
-
     .nested7 {
         border-collapse: collapse;
         width: 100%;
@@ -366,16 +361,16 @@
 ?>
 
     <div class="maincontent fontsize">
-        <table style="width:100%; margin-top: 50px; margin-bottom: 20px;">
+        <table style="width:100%">
             <tr>
                 <td><img id="logo_image"
                         src="<?php echo site_url("assets/uploads/" . $system_global_settings[0]->sytem_admin_logo); ?>"
                         alt="<?php echo $system_global_settings[0]->system_title ?>"
-                        title="<?php echo $system_global_settings[0]->system_title ?>" style="
-                        float: left;
-                        width: 80px !important;
-                        height: 80px;
-                        padding: 10px;" /></td>
+                        title="<?php echo $system_global_settings[0]->system_title ?>" style="idth: 200px !important;
+    float: left;
+    width: 50px !important;
+    height: 50px;
+    padding: 10px;" /></td>
                 <td style="text-align:center">
                     <h1>
                         <h2><?php echo $system_global_settings[0]->system_title ?> -
@@ -499,100 +494,100 @@
                         </tbody>
                     </table>
                 </td>
-                <td style="paddin:10px !important">
-                    <table class="nested6">
+                <td>
+                    <table class="nested6 ">
                         <tbody>
-                            <tr style="height: 25px" class="border-rb">
-                                <td class="border-rb" style="width: 25%;">
+                            <tr style="margin-top: -1px; height: 25px">
+                                <td class="border-b " style="width: 25%;">
                                     <h4>MONTH</h4>
                                 </td>
-                                <td class="border-rb" style="width: 25%;">
+                                <td class="border-b" style="width: 25%;">
                                     <h4>UNITS</h4>
                                 </td>
-                                <td class="border-rb" style="width: 25%;">
+                                <td class="border-b" style="width: 25%;">
                                     <h4>BILL</h4>
                                 </td>
-                                <td class="border-rb" style="width: 25%;">
+                                <td class="border-b" style="width: 25%;">
                                     <h4>PAYMENT</h4>
                                 </td>
                             </tr>
                             <?php 
-                                                        
-                                                        
-                                                        
-                                // Explode the billing month to get the year and month separately
-                                $billingMonth = explode('-', $billing_month->billing_month);
+                        
+                        
+                        
+// Explode the billing month to get the year and month separately
+$billingMonth = explode('-', $billing_month->billing_month);
 
-                                $by = $billingMonth[0];
-                                $bm = $billingMonth[1]-1;
+$by = $billingMonth[0];
+$bm = $billingMonth[1]-1;
 
-                                // Initialize an array to store the previous 12 months
-                                $previousMonths = [];
+// Initialize an array to store the previous 12 months
+$previousMonths = [];
 
-                                // Loop to get the previous 12 months
-                                for ($i = 0; $i < 13; $i++) {
-                                    // Create a DateTime object for the current billing month
-                                    $currentDate = DateTime::createFromFormat('Y-m', $by . '-' . $bm);
+// Loop to get the previous 12 months
+for ($i = 0; $i < 13; $i++) {
+    // Create a DateTime object for the current billing month
+    $currentDate = DateTime::createFromFormat('Y-m', $by . '-' . $bm);
 
-                                    // Subtract the number of months based on the loop index
-                                    $currentDate->modify("-$i months");
-                                    $month = $currentDate->format('Y-m');
-                                    $query = "SELECT `consumer_monthly_bills`.* 
-                                        FROM `consumer_monthly_bills`
-                                        INNER JOIN billing_months ON (billing_months.billing_month_id = `consumer_monthly_bills`.`billing_month_id`)
-                                        WHERE billing_months.billing_month = '".$month."'
-                                        AND `consumer_monthly_bills`.`consumer_id` = '".$consumer->consumer_id."'";
+    // Subtract the number of months based on the loop index
+    $currentDate->modify("-$i months");
+    $month = $currentDate->format('Y-m');
+    $query = "SELECT `consumer_monthly_bills`.* 
+          FROM `consumer_monthly_bills`
+          INNER JOIN billing_months ON (billing_months.billing_month_id = `consumer_monthly_bills`.`billing_month_id`)
+          WHERE billing_months.billing_month = '".$month."'
+          AND `consumer_monthly_bills`.`consumer_id` = '".$consumer->consumer_id."'";
 
-                                $m_bill = $this->db->query($query)->row();
+$m_bill = $this->db->query($query)->row();
 
-                                    ?>
+    ?>
                             <tr style="height: 17px" class="content">
-                                <td class="border-rb">
+                                <td class="border-r">
                                     <?php echo $currentDate->format('M y'); ?>
                                 </td>
                                 <?php if($m_bill){ ?>
-                                <td class="border-rb">
+                                <td class="border-r">
                                     <?php echo $m_bill->unit_cosumed; ?>
                                 </td>
-                                <td class="border-rb">
+                                <td class="border-r">
                                     <?php echo $m_bill->payable; ?>
                                 </td>
-                                <td class="border-rb">
+                                <td>
                                     <?php echo $m_bill->paid; ?>
                                 </td>
                                 <?php }else{ ?>
-                                <td class="border-rb">0</td>
-                                <td class="border-rb">0</td>
-                                <td class="border-rb">0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
                                 <?php } ?>
                             </tr>
                             <?php }
 
 // Now you can use the $previousMonths array in your HTML
-                            ?>
+?>
+
+
+
+
                         </tbody>
                     </table>
                 </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <br />
-                    <br />
-                    <table class="nested6" style="width:100%">
+                <td>
+                    <table>
                         <tr>
-                            <td>
+                            <td class="border-r">
                                 <h4>METER NO</h4>
                             </td>
-                            <td>
+                            <td class="border-r">
                                 <h4>PREVIOUS READING</h4>
                             </td>
-                            <td>
+                            <td class="border-r">
                                 <h4>PRESENT READING</h4>
                             </td>
-                            <td>
+                            <td class="border-r">
                                 <h4>UNITS</h4>
                             </td>
-                            <td>
+                            <td class="border-r">
                                 <h4>TARIFF</h4>
                             </td>
                             <td>
@@ -621,13 +616,6 @@
                         </tr>
 
                     </table>
-                    <br />
-                    <br />
-                                </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>
                     <table class="nested7">
                         <tbody>
                             <tr class="fontsize" style="height: 28px; background-color: #7ADEFF; text-align: center">
@@ -713,45 +701,17 @@
             </tr>
         </table>
 
-<br /> <br /><br />
+
         <div class="border-b" style="padding:10px">
             -----------------------------------------------------CUT
             HERE---------------------------------------------------&#9986;
-             <br /> <br /><br />
         </div>
-       
         <div class="heade rtable fontsize">
-
-        <h5>Office Copy</h5>
             <div>
 
                 <div style=" display: inline-block">
                     <table style="width:100%">
                         <tr>
-                            
-                            <td>
-                               <table style="width:100%; margin-top: 50px; margin-bottom: 20px;">
-            <tr>
-                <td><img id="logo_image"
-                        src="<?php echo site_url("assets/uploads/" . $system_global_settings[0]->sytem_admin_logo); ?>"
-                        alt="<?php echo $system_global_settings[0]->system_title ?>"
-                        title="<?php echo $system_global_settings[0]->system_title ?>" style="
-                        float: left;
-                        width: 80px !important;
-                        height: 80px;
-                        padding: 10px;" /></td>
-                <td style="text-align:center">
-                    <h1>
-                        <h2><?php echo $system_global_settings[0]->system_title ?> -
-                            <?php echo $system_global_settings[0]->system_sub_title ?></h2>
-                        <h5>Address:<?php echo $system_global_settings[0]->address ?></h5>
-
-                    </h1>
-                </td>
-                
-            </tr>
-        </table>
-
                             <td>
                                 <table
                                     style=" width: 120px; margin-right: 20px; float: right; border-collapse: collapse; text-align: center">
@@ -765,7 +725,18 @@
                                                 <?php echo $consumer->consumer_id; ?>
                                             </td>
                                         </tr>
-                                        
+
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>
+                                <h2><?php echo $system_global_settings[0]->system_title ?> -
+                                    <?php echo $system_global_settings[0]->system_sub_title ?></h2>
+
+                            <td>
+                                <table
+                                    style="width: 120px; margin-right: 20px; float: right; border-collapse: collapse; text-align: center">
+                                    <tbody>
                                         <tr>
                                             <td class="border-rb border-t"
                                                 style="border-left: 1px solid #78578e; color: #78578e;">
@@ -795,8 +766,7 @@
 
             </div>
 
-<br />
-<br />
+
 
             <div style="width: 98%; margin: 0 auto 10px;">
                 <table style="text-align: center; width: 100%; border-collapse: collapse;">
@@ -846,11 +816,6 @@
                         </tr>
                     </tbody>
                 </table>
-                <br />
-<br />
-<br />
-<br />
-<p style="text-align:center"><small>Software Desing and Developed by Navid Aziz 0324-4424424</small></p>
             </div>
         </div>
 
