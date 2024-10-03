@@ -234,7 +234,16 @@ $billing_month = $this->db->query($query)->row();
                                                 WHERE consumers.status=1";
                                                     $consumers = $this->db->query($query)->result();
 
-                                                    foreach ($consumers as $consumer) : ?>
+                                                    foreach ($consumers as $consumer) : 
+                                                    if ($billing_month) {
+                                                                $query = "SELECT * FROM consumer_monthly_bills
+                                                                WHERE  billing_month_id = '" . $billing_month->billing_month_id . "'
+                                                                AND consumer_id = '" . $consumer->consumer_id . "'";
+                                                                $row = $this->db->query($query)->row();
+                                                            } else {
+                                                                $row = NULL;
+                                                            }
+                                                    ?>
 
                                                 <tr>
 
@@ -253,6 +262,12 @@ $billing_month = $this->db->query($query)->row();
                                                     </td>
                                                     <td>
                                                         <?php echo $consumer->consumer_contact_no; ?>
+                                                        <?php if($row){ ?>
+                                                       <a href="https://web.whatsapp.com/send?phone=923244424414&text=<?php echo urlencode('Here is your link: ' . site_url('billing_months/print_billing_month/' . $billing_month->billing_month_id . '/' . $consumer->consumer_id . '/' . $row->consumer_monthly_bill_id)); ?>" target="_blank" id="whatsappLink">
+    <i style="color:green" class="fa fa-whatsapp" aria-hidden="true"></i>
+</a>
+
+<?php } ?>
                                                     </td>
                                                     <td>
                                                         <?php echo $consumer->consumer_address; ?>
@@ -268,14 +283,7 @@ $billing_month = $this->db->query($query)->row();
                                                     </td>
 
                                                     <?php
-                                                            if ($billing_month) {
-                                                                $query = "SELECT * FROM consumer_monthly_bills
-                                                                WHERE  billing_month_id = '" . $billing_month->billing_month_id . "'
-                                                                AND consumer_id = '" . $consumer->consumer_id . "'";
-                                                                $row = $this->db->query($query)->row();
-                                                            } else {
-                                                                $row = NULL;
-                                                            }
+                                                            
                                                             if ($row) {
                                                             ?>
 

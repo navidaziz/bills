@@ -277,45 +277,18 @@ class Billing_months extends Admin_Controller
         $this->data["billing_month"] = $this->data["billing_months"][0];
 
         $this->load->view(ADMIN_DIR . "billing_months/print_billing_month", $this->data);
+    }
+    public function print_monthly_bills($billing_month_id)
+    {
 
+        $billing_month_id = (int) $billing_month_id;
+        $this->data['billing_month_id'] = $billing_month_id;
+        $this->data["billing_months"] = $this->billing_month_model->get_billing_month($billing_month_id);
+        $this->data["billing_month"] = $this->data["billing_months"][0];
 
-
-        //exit();
-
-        
-// $html='hi';
-
-
-//             $pdf = new Tc_pdf();
-
-//             // Set document information
-//             $pdf->SetCreator(PDF_CREATOR);
-//             $pdf->SetAuthor('Your Name');
-//             $pdf->SetTitle('HTML to PDF Example');
-//             $pdf->SetSubject('TCPDF Tutorial');
-
-//             // Set default header and footer data
-//             $pdf->SetHeaderData('', 0, 'HTML to PDF Example', 'Generated using TCPDF');
-//             $pdf->setHeaderFont(Array('helvetica', '', 10));
-//             $pdf->setFooterFont(Array('helvetica', '', 8));
-//             $pdf->SetMargins(10, 10, 10);
-//             $pdf->SetHeaderMargin(5);
-//             $pdf->SetFooterMargin(10);
-
-//             // Add a page
-//             $pdf->AddPage();
-
-//             // Set font
-//             $pdf->SetFont('helvetica', '', 12);
-
-           
-//             // Output the HTML content
-//             $pdf->writeHTML($html, true, false, true, false, '');
-
-//             // Close and output PDF document
-//             $pdf->Output('example.pdf', 'I');
-        }
-  private function get_billing_month_inputs(){
+        $this->load->view(ADMIN_DIR . "billing_months/print_monthly_bills", $this->data);
+    }  
+    private function get_billing_month_inputs(){
             $input["billing_month_id"] = $this->input->post("billing_month_id");
             $input["billing_month"] = $this->input->post("billing_month");
             $input["meter_reading_start"] = $this->input->post("meter_reading_start");

@@ -1,0 +1,331 @@
+html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        -webkit-print-color-adjust: exact;
+        text-align: center;
+        font-family: sans-serif, arial;
+        color: #78578e;
+    }
+
+    .content {
+        color: Black;
+    }
+
+    .maincontent {
+        /*width: 730pt;*/
+        width: 753pt;
+        min-width: 920px;
+        margin: 10pt auto;
+        border: 1px solid #78578e;
+        height: auto;
+        overflow: hidden;
+    }
+
+    .maincontentnf {
+        width: 50%;
+        /* min-width : 920px;*/
+        margin-left: 300px;
+        border: 4px solid #78578e;
+        height: 100%;
+        overflow: hidden;
+        position: absolute;
+    }
+
+    .innercontentnf {
+        padding-top: 300px;
+        width: 100%;
+        height: 100%;
+    }
+
+    h1 {
+        margin: 0;
+        /*height: 20px;*/
+    }
+
+    h2 {
+        margin-top: 0;
+        margin-left: 50px;
+    }
+
+    .zeroMargin {
+        margin: 0pt;
+    }
+
+    h3 {
+        margin: 0;
+        color: blue;
+    }
+
+    h4 {
+        margin: 5px 5px;
+        font-size: 11px;
+    }
+
+    .headp {
+        margin: 0;
+        margin-left: 50px;
+    }
+
+    span {
+        font-size: small;
+    }
+
+    .header {
+        width: 100%;
+        height: 70pt;
+        display: inline block;
+        float: left;
+    }
+
+    .headerimg {
+        width: 15%;
+        /* margin-top:19px;*/
+        float: left;
+        position: relative;
+        height: 100%;
+    }
+
+    .heading {
+        float: left;
+        /*position:relative;*/
+        padding: 0;
+        width: 85%;
+        height: 100%;
+    }
+
+    .maintable {
+        width: 100%;
+        table-layout: fixed;
+        height: auto;
+        border-top: 1px solid #78578e;
+        font-family: sans-serif;
+        border-collapse: collapse;
+        font-size: .8;
+        -moz-box-sizing: border-box;
+
+    }
+
+    .nestable1 {
+        width: 100%;
+        height: 44px;
+        border-spacing: 0px;
+    }
+
+    .border-rb {
+        border-right: 1px solid #78578e;
+        border-bottom: 1px solid #78578e;
+    }
+
+    .border-r {
+        border-right: 1px solid #78578e;
+    }
+
+    .border-b {
+        border-bottom: 1px solid #78578e;
+    }
+
+    .border-t {
+        border-top: 1px solid #78578e;
+    }
+
+    .border-rt {
+        border-top: 1px solid #78578e;
+        border-right: 1px solid #78578e;
+    }
+
+    .border-tb {
+        border-top: 1px solid #78578e;
+        border-bottom: 1px solid #78578e;
+    }
+
+    .nesttable3 {
+        border-collapse: collapse;
+        width: 100%;
+        height: 96px;
+        border-spacing: 0px;
+        -moz-box-sizing: border-box;
+    }
+
+    .nested4 {
+        border-collapse: collapse;
+        width: 100%;
+        height: 248pt;
+    }
+
+
+
+    .fontsize {
+        font-family: sans-serif;
+        font-size: .9em;
+    }
+
+    .nested5 {
+        border-collapse: collapse;
+        width: 100%;
+        height: 100%;
+        border-spacing: 0px;
+        padding-top: 0;
+        -moz-box-sizing: border-box;
+    }
+
+    .nested6 {
+        border-collapse: collapse;
+        width: 100%;
+        height: 100%;
+        border-spacing: 0px;
+        -moz-box-sizing: border-box;
+    }
+
+    
+    tr {
+        border: 1px solid #78578e;
+    }
+
+    .nested7 {
+        border-collapse: collapse;
+        width: 100%;
+        border-spacing: 0px;
+        padding-top: 0;
+        -moz-box-sizing: border-box;
+    }
+
+    .nested8 {
+        border-collapse: collapse;
+        width: 100%;
+        height: 450px;
+        border-spacing: 0px;
+        padding-top: 0;
+        -moz-box-sizing: border-box;
+    }
+
+    .nestedwidth1 {
+        background-color: #EBFA48;
+        width: 25%;
+    }
+
+    .nestedtdwidth {
+        width: 25%;
+    }
+
+    .nestedtd2width {
+        width: 50%;
+    }
+
+    .footer1 {
+        width: 100%;
+        height: 270px;
+        float: left;
+    }
+
+    .footerimg {
+        width: 15%;
+        /* margin-top:19px;*/
+        float: left;
+        position: relative;
+        height: 20%;
+        margin-top: 2px;
+    }
+
+    .footertext {
+        float: right;
+        width: 85%;
+        height: 20%;
+    }
+
+    .billno {
+        float: right;
+    }
+
+    .footerconsumerid {
+        height: 20px;
+        border: 1px solid #78578e;
+        width: 40%;
+        float: right;
+        margin-right: 100px;
+    }
+
+    .footercontent {
+        margin-top: 180px;
+        border: 1px solid #78578e;
+        width: 95%;
+        height: 70px;
+        margin-left: 20px;
+    }
+
+    .display-none {
+        display: none !important;
+    }
+
+    /******************* COLORS **********************/
+    .color-red {
+        color: red;
+    }
+
+    .color-black {
+        color: #161414;
+    }
+
+    /*******************  STYLES FOR POPUP MODAL **********************/
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    /* Style for the modal */
+    .modal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+    }
+
+    /* Style for the modal content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        /* 10% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 40%;
+        /* Adjust width to reduce popup size */
+        max-height: 70%;
+        /* Add max-height to add scroll bar if content overflows */
+        overflow-y: auto;
+        /* Add vertical scroll bar if content overflows */
+        border-radius: 5px;
+    }
+
+    /* Style for the close button */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }

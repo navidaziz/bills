@@ -2,34 +2,38 @@
 
 <head>
     <meta charset="utf-16">
-
     <meta name="keywords"
         content="iescobill, mepcobill, pescobill, hescobill, sepcobill, qescobill, gepcobill, fescobill, tescobill">
     <meta name="description" content="Consumer electricity bills">
-
-    <title>BILL</title>
-<link rel="stylesheet" type="text/css" href="<?php echo site_url("assets/" . ADMIN_DIR . "css/bill.css"); ?>" />
+    <title><?php echo date("M, Y", strtotime($billing_month->billing_month."-1")); ?></title>
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url("assets/" . ADMIN_DIR . "css/bill.css"); ?>" />
+</head>
 
 <body contenteditable="false" cz-shortcut-listen="true">
 
-
+    <?php 
+$query="SELECT * FROM consumers WHERE status=1";
+$consumers = $this->db->query($query)->result();
+$not_reading_list="";
+foreach($consumers as $consumer){ ?>
     <?php
-    // SQL Query to get the bill details
-    $query = "
-                            SELECT 
-                            consumer_monthly_bills.*, 
-                            billing_months.billing_month,
-                            billing_months.billing_due_date
-                            FROM consumer_monthly_bills
-                            INNER JOIN billing_months 
-                            ON billing_months.billing_month_id = consumer_monthly_bills.billing_month_id
-                            WHERE 
-                            consumer_monthly_bills.consumer_monthly_bill_id = ? 
-                            AND consumer_monthly_bills.consumer_id = ?
-                            ";
-    $row = $this->db->query($query, [$consumer_monthly_bill_id, $consumer_id])->row();
-?>
-
+    
+         $query = "
+                                 SELECT 
+                                 consumer_monthly_bills.*, 
+                                 billing_months.billing_month,
+                                 billing_months.billing_due_date
+                                 FROM consumer_monthly_bills
+                                 INNER JOIN billing_months 
+                                 ON billing_months.billing_month_id = consumer_monthly_bills.billing_month_id
+                                 WHERE 
+                                 consumer_monthly_bills.billing_month_id = ? 
+                                 AND consumer_monthly_bills.consumer_id = ?
+                                 ";
+         $row = $this->db->query($query, [$billing_month_id, $consumer->consumer_id])->row();
+         
+         ?>
+    <?php if($row){ ?>
     <div class="maincontent fontsize">
         <table style="width:100%; margin-top: 50px; margin-bottom: 20px;">
             <tr>
@@ -37,16 +41,16 @@
                         src="<?php echo site_url("assets/uploads/" . $system_global_settings[0]->sytem_admin_logo); ?>"
                         alt="<?php echo $system_global_settings[0]->system_title ?>"
                         title="<?php echo $system_global_settings[0]->system_title ?>" style="
-                        float: left;
-                        width: 80px !important;
-                        height: 80px;
-                        padding: 10px;" /></td>
+                    float: left;
+                    width: 80px !important;
+                    height: 80px;
+                    padding: 10px;" /></td>
                 <td style="text-align:center">
                     <h1>
                         <h2><?php echo $system_global_settings[0]->system_title ?> -
-                            <?php echo $system_global_settings[0]->system_sub_title ?></h2>
+                            <?php echo $system_global_settings[0]->system_sub_title ?>
+                        </h2>
                         <h5>Address:<?php echo $system_global_settings[0]->address ?></h5>
-
                     </h1>
                 </td>
                 <td> <small>
@@ -54,11 +58,10 @@
                         Phone: <?php echo $system_global_settings[0]->phone_number ?><br />
                         Mobile: <?php echo $system_global_settings[0]->mobile_number ?><br />
                         Fax: <?php echo $system_global_settings[0]->fax_number ?><br />
-
-                    </small></td>
+                    </small>
+                </td>
             </tr>
         </table>
-
         <table class="maintable" cellpadding="0" cellspacing="0">
             <tbody>
                 <tr class="font-size" style="width: 100%;">
@@ -92,9 +95,7 @@
                         <h4><?php echo $consumer->consumer_id; ?></h4>
                     </td>
                     <td class="border-rb" style="width: 53px">
-
                         <h4><?php echo $billing_month->billing_month_id; ?></h4>
-
                     </td>
                     <td class="border-rb" style="width: 129px">
                         <h4><?php echo date("M, Y", strtotime($billing_month->billing_month."-1")); ?></h4>
@@ -109,19 +110,15 @@
                         <h4><?php echo date("d M, Y", strtotime($billing_month->billing_due_date)); ?></h4>
                     </td>
                 </tr>
-
-
             </tbody>
         </table>
-<br />
-<br />
+        <br />
+        <br />
         <table style="width:100%">
             <tr>
                 <td>
                     <table class="nes ted4" style="text-align:left">
-
                         <tbody>
-
                             <tr>
                                 <th><?php echo $this->lang->line('consumer_cnic'); ?></th>
                                 <td>
@@ -139,14 +136,12 @@
                                 <td>
                                     <?php echo $consumer->consumer_father_name; ?>
                                 </td>
-
                             </tr>
                             <tr>
                                 <th><?php echo $this->lang->line('consumer_contact_no'); ?></th>
                                 <td>
                                     <?php echo $consumer->consumer_contact_no; ?>
                                 </td>
-
                             </tr>
                             <tr>
                                 <th><?php echo $this->lang->line('consumer_address'); ?></th>
@@ -160,8 +155,6 @@
                                     <?php echo status($consumer->status); ?>
                                 </td>
                             </tr>
-
-
                         </tbody>
                     </table>
                 </td>
@@ -183,35 +176,32 @@
                                 </td>
                             </tr>
                             <?php 
-                                                        
-                                                        
-                                                        
-                                // Explode the billing month to get the year and month separately
-                                $billingMonth = explode('-', $billing_month->billing_month);
-
-                                $by = $billingMonth[0];
-                                $bm = $billingMonth[1]-1;
-
-                                // Initialize an array to store the previous 12 months
-                                $previousMonths = [];
-
-                                // Loop to get the previous 12 months
-                                for ($i = 0; $i < 13; $i++) {
-                                    // Create a DateTime object for the current billing month
-                                    $currentDate = DateTime::createFromFormat('Y-m', $by . '-' . $bm);
-
-                                    // Subtract the number of months based on the loop index
-                                    $currentDate->modify("-$i months");
-                                    $month = $currentDate->format('Y-m');
-                                    $query = "SELECT `consumer_monthly_bills`.* 
-                                        FROM `consumer_monthly_bills`
-                                        INNER JOIN billing_months ON (billing_months.billing_month_id = `consumer_monthly_bills`.`billing_month_id`)
-                                        WHERE billing_months.billing_month = '".$month."'
-                                        AND `consumer_monthly_bills`.`consumer_id` = '".$consumer->consumer_id."'";
-
-                                $m_bill = $this->db->query($query)->row();
-
-                                    ?>
+                            // Explode the billing month to get the year and month separately
+                            $billingMonth = explode('-', $billing_month->billing_month);
+                            
+                            $by = $billingMonth[0];
+                            $bm = $billingMonth[1]-1;
+                            
+                            // Initialize an array to store the previous 12 months
+                            $previousMonths = [];
+                            
+                            // Loop to get the previous 12 months
+                            for ($i = 0; $i < 13; $i++) {
+                                // Create a DateTime object for the current billing month
+                                $currentDate = DateTime::createFromFormat('Y-m', $by . '-' . $bm);
+                            
+                                // Subtract the number of months based on the loop index
+                                $currentDate->modify("-$i months");
+                                $month = $currentDate->format('Y-m');
+                                $query = "SELECT `consumer_monthly_bills`.* 
+                                    FROM `consumer_monthly_bills`
+                                    INNER JOIN billing_months ON (billing_months.billing_month_id = `consumer_monthly_bills`.`billing_month_id`)
+                                    WHERE billing_months.billing_month = '".$month."'
+                                    AND `consumer_monthly_bills`.`consumer_id` = '".$consumer->consumer_id."'";
+                            
+                            $m_bill = $this->db->query($query)->row();
+                            
+                                ?>
                             <tr style="height: 17px" class="content">
                                 <td class="border-rb">
                                     <?php echo $currentDate->format('M y'); ?>
@@ -233,8 +223,6 @@
                                 <?php } ?>
                             </tr>
                             <?php }
-
-// Now you can use the $previousMonths array in your HTML
                             ?>
                         </tbody>
                     </table>
@@ -285,15 +273,14 @@
                                 <?php echo $row->total; ?><br>
                             </td>
                         </tr>
-
                     </table>
                     <br />
                     <br />
-                                </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
                     <table class="nested7">
                         <tbody>
                             <tr class="fontsize" style="height: 28px; background-color: #7ADEFF; text-align: center">
@@ -320,7 +307,6 @@
                             <tr class="fontsize" style="height: 24px;">
                                 <td class="border-rb nestedtd2width" style="background-color: #7ADEFF;">
                                     <b>TAXES <?php echo $row->tax_per ?>%
-
                                     </b>
                                 </td>
                                 <td colspan="3" class="border-b  nestedtd2width content">
@@ -331,7 +317,6 @@
                                 <td class="border-rb nestedtd2width" style="background-color: #7ADEFF;">
                                     <b>
                                         MONTHLY SERVICE CHARGES
-
                                     </b>
                                     <br>
                                 </td>
@@ -340,14 +325,12 @@
                                     <br>
                                 </td>
                             </tr>
-
                             <tr class="fontsize" style="height: 24px;">
                                 <td class="border-rb nestedtd2width" style="color: Red; background-color: #7ADEFF">
                                     <b>PAYABLE WITHIN DUE DATE</b>
                                 </td>
                                 <td colspan="3" class="border-b nestedtd2width content">
                                     <?php echo $row->payable_within_due_date; ?>
-
                                     <br>
                                     <span></span>
                                 </td>
@@ -366,58 +349,48 @@
                                 </td>
                                 <td colspan="3" class="border-b  nestedtd2width content">
                                     <?php echo $row->payable_after_due_date; ?>
-
                                     <br>
                                     <span> </span>
                                 </td>
                             </tr>
-
                         </tbody>
                     </table>
-
                 </td>
             </tr>
         </table>
-
-<br /> <br /><br />
+        <br /> <br /><br />
         <div class="border-b" style="padding:10px">
             -----------------------------------------------------CUT
             HERE---------------------------------------------------&#9986;
-             <br /> <br /><br />
+            <br /> <br /><br />
         </div>
-       
         <div class="heade rtable fontsize">
-
-        <h5>Office Copy</h5>
+            <h5>Office Copy</h5>
             <div>
-
                 <div style=" display: inline-block">
                     <table style="width:100%">
                         <tr>
-                            
                             <td>
-                               <table style="width:100%; margin-top: 50px; margin-bottom: 20px;">
-            <tr>
-                <td><img id="logo_image"
-                        src="<?php echo site_url("assets/uploads/" . $system_global_settings[0]->sytem_admin_logo); ?>"
-                        alt="<?php echo $system_global_settings[0]->system_title ?>"
-                        title="<?php echo $system_global_settings[0]->system_title ?>" style="
-                        float: left;
-                        width: 80px !important;
-                        height: 80px;
-                        padding: 10px;" /></td>
-                <td style="text-align:center">
-                    <h1>
-                        <h2><?php echo $system_global_settings[0]->system_title ?> -
-                            <?php echo $system_global_settings[0]->system_sub_title ?></h2>
-                        <h5>Address:<?php echo $system_global_settings[0]->address ?></h5>
-
-                    </h1>
-                </td>
-                
-            </tr>
-        </table>
-
+                                <table style="width:100%; margin-top: 50px; margin-bottom: 20px;">
+                                    <tr>
+                                        <td><img id="logo_image"
+                                                src="<?php echo site_url("assets/uploads/" . $system_global_settings[0]->sytem_admin_logo); ?>"
+                                                alt="<?php echo $system_global_settings[0]->system_title ?>"
+                                                title="<?php echo $system_global_settings[0]->system_title ?>" style="
+                                        float: left;
+                                        width: 80px !important;
+                                        height: 80px;
+                                        padding: 10px;" /></td>
+                                        <td style="text-align:center">
+                                            <h1>
+                                                <h2><?php echo $system_global_settings[0]->system_title ?> -
+                                                    <?php echo $system_global_settings[0]->system_sub_title ?>
+                                                </h2>
+                                                <h5>Address:<?php echo $system_global_settings[0]->address ?></h5>
+                                            </h1>
+                                        </td>
+                                    </tr>
+                                </table>
                             <td>
                                 <table
                                     style=" width: 120px; margin-right: 20px; float: right; border-collapse: collapse; text-align: center">
@@ -431,7 +404,6 @@
                                                 <?php echo $consumer->consumer_id; ?>
                                             </td>
                                         </tr>
-                                        
                                         <tr>
                                             <td class="border-rb border-t"
                                                 style="border-left: 1px solid #78578e; color: #78578e;">
@@ -441,7 +413,6 @@
                                                 <?php echo $billing_month->billing_month_id; ?>
                                             </td>
                                         </tr>
-
                                     </tbody>
                                 </table>
                             </td>
@@ -453,17 +424,10 @@
                             </td>
                         </tr>
                     </table>
-
                 </div>
-
-
-
-
             </div>
-
-<br />
-<br />
-
+            <br />
+            <br />
             <div style="width: 98%; margin: 0 auto 10px;">
                 <table style="text-align: center; width: 100%; border-collapse: collapse;">
                     <tbody>
@@ -478,7 +442,6 @@
                             <td class="border-rb border-t" style="width: 15%; color: #78578e;">
                                 <h4>DUE DATE</h4>
                             </td>
-
                             <td class="border-rb border-t" style="width: 25%; color: red">
                                 <h4>PAYABLE WITHIN DUE DATE</h4>
                             </td>
@@ -504,8 +467,6 @@
                             </td>
                             <td class="font-size border-rb border-r content" style="width: 15%;">
                                 <?php echo $row->payable_after_due_date; ?>
-
-
                                 <br>
                                 <span></span>
                             </td>
@@ -513,19 +474,24 @@
                     </tbody>
                 </table>
                 <br />
-<br />
-<br />
-<br />
-<p style="text-align:center"><small>Software Desing and Developed by Navid Aziz 0324-4424424</small></p>
+                <br />
+                <br />
+                <br />
+                <p style="text-align:center"><small>Software Desing and Developed by Navid Aziz 0324-4424424</small></p>
             </div>
         </div>
-
-
     </div>
+    <div style="page-break-before: always;"></div>
+    <?php } ?>
+    <?php $not_reading_list.= $consumer->consumer_name." ".$consumer->consumer_father_name."<br />";  ?>
+    <?php } ?>
 
 
+    <div>
+        <?php echo $not_reading_list; ?>
+    </div>
+    <div style="page-break-before: always;"></div>
 
-    <div></div>
 </body>
 
 </html>
