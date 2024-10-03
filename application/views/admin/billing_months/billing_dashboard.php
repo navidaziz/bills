@@ -1,6 +1,25 @@
 <?php $query = "SELECT * FROM billing_months WHERE billing_month = '" . $BillingMonth . "'";
 $billing_month = $this->db->query($query)->row();
+function validateMobileNumber($mobileNumber) {
+    // Remove any spaces, dashes, or special characters
+    $mobileNumber = preg_replace('/[^\d]/', '', $mobileNumber);
+
+    // Check if the number starts with 03, 3, or 923
+    if (preg_match('/^(03|3|923)\d{8,9}$/', $mobileNumber)) {
+        // Normalize the mobile number to start with 923
+        if (substr($mobileNumber, 0, 2) === '03') {
+            $mobileNumber = '92' . substr($mobileNumber, 1);
+        } elseif (substr($mobileNumber, 0, 1) === '3') {
+            $mobileNumber = '923' . substr($mobileNumber, 1);
+        }
+
+        return $mobileNumber; // Return the valid mobile number
+    } else {
+        return false; // Invalid mobile number
+    }
+}
 ?>
+
 <div class="row">
     <div class="col-sm-12">
         <div class="page-header">
@@ -262,8 +281,8 @@ $billing_month = $this->db->query($query)->row();
                                                     </td>
                                                     <td>
                                                         <?php echo $consumer->consumer_contact_no; ?>
-                                                        <?php if($row){ ?>
-                                                       <a href="https://web.whatsapp.com/send?phone=923244424414&text=<?php echo urlencode('Download you electricity bill: ' . site_url('billing_months/print_billing_month/' . $billing_month->billing_month_id . '/' . $consumer->consumer_id . '/' . $row->consumer_monthly_bill_id)); ?> Thanks." target="_blank" id="whatsappLink">
+                                                        <?php if($row and validateMobileNumber($consumer->consumer_contact_no)){ ?>
+                                                       <a href="https://web.whatsapp.com/send?phone=<?php echo $consumer->consumer_contact_no; ?>&text=<?php echo urlencode('Download you electricity bill: ' . site_url('billing_months/print_billing_month/' . $billing_month->billing_month_id . '/' . $consumer->consumer_id . '/' . $row->consumer_monthly_bill_id)); ?> Thanks." target="_blank" id="whatsappLink">
     <i style="color:green" class="fa fa-whatsapp" aria-hidden="true"></i>
 </a>
 
