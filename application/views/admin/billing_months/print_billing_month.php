@@ -18,16 +18,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <meta name="keywords" content="">
-    <meta name="description" content="">
-    
-    <title><?php echo $consumer->consumer_name; ?></title>
-    
+
+    <meta name="keywords" content="electricity, bill, consumer, utilities">
+    <meta name="description" content="Electricity bill for <?php echo $consumer->consumer_name; ?> for the month of <?php echo date('F Y', strtotime($billing_month->billing_month . '-1')); ?>.">
+
+    <title><?php echo $consumer->consumer_name; ?> - Electricity Bill</title>
+
     <!-- Open Graph Tags -->
-    <meta property="og:title" content="<?php echo $consumer->consumer_name; ?>" />
-    <meta property="og:description" content="Electricity Bill for Month <?php echo date("M, Y", strtotime($billing_month->billing_month."-1")); ?>" />
-    <!-- <meta property="og:image" content="<?php echo site_url('assets/images/electricity_bill.png'); ?>" /> Path to your image -->
+    <meta property="og:title" content="<?php echo $consumer->consumer_name; ?> - Electricity Bill" />
+    <meta property="og:description" content="Electricity Bill for Month <?php echo date('F Y', strtotime($billing_month->billing_month . '-1')); ?>" />
+    <meta property="og:image" content="<?php echo site_url('assets/images/electricity_bill.png'); ?>" /> <!-- Path to your image -->
     <meta property="og:url" content="<?php echo current_url(); ?>" /> <!-- The URL of your page -->
     
 <link rel="stylesheet" type="text/css" href="<?php echo site_url("assets/" . ADMIN_DIR . "css/bill.css"); ?>" />
