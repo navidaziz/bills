@@ -1,19 +1,5 @@
 <html lang="en">
-
-<head>
-    <meta charset="utf-16">
-
-    <meta name="keywords"
-        content="iescobill, mepcobill, pescobill, hescobill, sepcobill, qescobill, gepcobill, fescobill, tescobill">
-    <meta name="description" content="Consumer electricity bills">
-
-    <title>BILL</title>
-<link rel="stylesheet" type="text/css" href="<?php echo site_url("assets/" . ADMIN_DIR . "css/bill.css"); ?>" />
-
-<body contenteditable="false" cz-shortcut-listen="true">
-
-
-    <?php
+<?php
     // SQL Query to get the bill details
     $query = "
                             SELECT 
@@ -29,6 +15,28 @@
                             ";
     $row = $this->db->query($query, [$consumer_monthly_bill_id, $consumer_id])->row();
 ?>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    
+    <title><?php echo $consumer->consumer_name; ?></title>
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="<?php echo $consumer->consumer_name; ?>" />
+    <meta property="og:description" content="Electricity Bill for Month <?php echo date("M, Y", strtotime($billing_month->billing_month."-1")); ?>" />
+    <!-- <meta property="og:image" content="<?php echo site_url('assets/images/electricity_bill.png'); ?>" /> Path to your image -->
+    <meta property="og:url" content="<?php echo current_url(); ?>" /> <!-- The URL of your page -->
+    
+<link rel="stylesheet" type="text/css" href="<?php echo site_url("assets/" . ADMIN_DIR . "css/bill.css"); ?>" />
+</head>
+
+<body contenteditable="false" cz-shortcut-listen="true">
+
+
+    
 
     <div class="maincontent fontsize">
         <table style="width:100%; margin-top: 50px; margin-bottom: 20px;">

@@ -263,7 +263,7 @@ $billing_month = $this->db->query($query)->row();
                                                     <td>
                                                         <?php echo $consumer->consumer_contact_no; ?>
                                                         <?php if($row){ ?>
-                                                       <a href="https://web.whatsapp.com/send?phone=923244424414&text=<?php echo urlencode('Here is your link: ' . site_url('billing_months/print_billing_month/' . $billing_month->billing_month_id . '/' . $consumer->consumer_id . '/' . $row->consumer_monthly_bill_id)); ?>" target="_blank" id="whatsappLink">
+                                                       <a href="https://web.whatsapp.com/send?phone=923244424414&text=<?php echo urlencode('Download you electricity bill: ' . site_url('billing_months/print_billing_month/' . $billing_month->billing_month_id . '/' . $consumer->consumer_id . '/' . $row->consumer_monthly_bill_id)); ?> Thanks." target="_blank" id="whatsappLink">
     <i style="color:green" class="fa fa-whatsapp" aria-hidden="true"></i>
 </a>
 
