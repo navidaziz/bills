@@ -16,21 +16,35 @@
     $row = $this->db->query($query, [$consumer_monthly_bill_id, $consumer_id])->row();
 ?>
 <head>
-    <meta charset="utf-8">
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="keywords" content="electricity, bill, consumer, utilities">
-    <meta name="description" content="Electricity bill for <?php echo $consumer->consumer_name; ?> for the month of <?php echo date('F Y', strtotime($billing_month->billing_month . '-1')); ?>.">
+<!-- SEO Metadata -->
+<meta name="keywords" content="electricity, bill, consumer, utilities">
+<meta name="description" content="Electricity bill for <?php  htmlspecialchars($consumer->consumer_name); ?> for the month of <?php  htmlspecialchars(date('F Y', strtotime($billing_month->billing_month . '-1'))); ?>.">
 
-    <title><?php echo $consumer->consumer_name; ?> - Electricity Bill</title>
+<title><?php  htmlspecialchars($consumer->consumer_name); ?> - Electricity Bill</title>
 
-    <!-- Open Graph Tags -->
-    <meta property="og:title" content="<?php echo $consumer->consumer_name; ?> - Electricity Bill" />
-    <meta property="og:description" content="Electricity Bill for Month <?php echo date('F Y', strtotime($billing_month->billing_month . '-1')); ?>" />
-    <meta property="og:image" content="<?php echo site_url('assets/images/electricity_bill.png'); ?>" /> <!-- Path to your image -->
-    <meta property="og:url" content="<?php echo current_url(); ?>" /> <!-- The URL of your page -->
-    
+<!-- Open Graph Tags for Social Media Sharing -->
+<meta property="og:title" content="<?php  htmlspecialchars($consumer->consumer_name); ?> - Electricity Bill" />
+<meta property="og:description" content="Electricity bill for the month of <?php  htmlspecialchars(date('F Y', strtotime($billing_month->billing_month . '-1'))); ?>." />
+<meta property="og:image" content="<?php  site_url('assets/images/electricity_bill.png'); ?>" />
+<meta property="og:url" content="<?php  current_url() . '?v=' . time(); ?>" /> <!-- Add cache-busting parameter -->
+
+<!-- Twitter Cards Metadata (Optional but Recommended for Twitter) -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<?php  htmlspecialchars($consumer->consumer_name); ?> - Electricity Bill">
+<meta name="twitter:description" content="Electricity bill for the month of <?php  htmlspecialchars(date('F Y', strtotime($billing_month->billing_month . '-1'))); ?>.">
+<meta name="twitter:image" content="<?php  site_url('assets/images/electricity_bill.png'); ?>">
+
+<!-- Cache-Control Headers for Dynamic Content -->
+<?php
+header('Cache-Control: no-cache, must-revalidate');
+header('Pragma: no-cache');
+header('Expires: 0');
+?>
+
 <link rel="stylesheet" type="text/css" href="<?php echo site_url("assets/" . ADMIN_DIR . "css/bill.css"); ?>" />
 </head>
 
