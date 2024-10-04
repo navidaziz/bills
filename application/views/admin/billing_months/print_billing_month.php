@@ -15,43 +15,47 @@
                             ";
     $row = $this->db->query($query, [$consumer_monthly_bill_id, $consumer_id])->row();
 ?>
+
 <head>
     <meta charset="UTF-8">
-<meta name="robots" content="noindex, nofollow">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- SEO Metadata -->
-<meta name="keywords" content="electricity, bill, consumer, utilities">
-<meta name="description" content="Electricity bill for <?php  htmlspecialchars($consumer->consumer_name); ?> for the month of <?php  htmlspecialchars(date('F Y', strtotime($billing_month->billing_month . '-1'))); ?>.">
+    <!-- SEO Metadata -->
+    <meta name="keywords" content="electricity, bill, consumer, utilities">
+    <meta name="description"
+        content="Electricity bill for <?php   echo htmlspecialchars($consumer->consumer_name); ?> for the month of <?php   echo htmlspecialchars(date('F Y', strtotime($billing_month->billing_month . '-1'))); ?>.">
 
-<title><?php  htmlspecialchars($consumer->consumer_name); ?> - Electricity Bill</title>
+    <title><?php   echo htmlspecialchars($consumer->consumer_name); ?> - Electricity Bill</title>
 
-<!-- Open Graph Tags for Social Media Sharing -->
-<meta property="og:title" content="<?php  htmlspecialchars($consumer->consumer_name); ?> - Electricity Bill" />
-<meta property="og:description" content="Electricity bill for the month of <?php  htmlspecialchars(date('F Y', strtotime($billing_month->billing_month . '-1'))); ?>." />
-<meta property="og:image" content="<?php  site_url('assets/images/electricity_bill.png'); ?>" />
-<meta property="og:url" content="<?php  current_url() . '?v=' . time(); ?>" /> <!-- Add cache-busting parameter -->
+    <!-- Open Graph Tags for Social Media Sharing -->
+    <meta property="og:title" content="<?php   echo htmlspecialchars($consumer->consumer_name); ?> - Electricity Bill" />
+    <meta property="og:description"
+        content="Electricity bill for the month of <?php   echo htmlspecialchars(date('F Y', strtotime($billing_month->billing_month . '-1'))); ?>." />
+    <meta property="og:image" content="<?php  site_url('assets/images/electricity_bill.png'); ?>" />
+    <meta property="og:url" content="<?php  current_url() . '?v=' . time(); ?>" /> <!-- Add cache-busting parameter -->
 
-<!-- Twitter Cards Metadata (Optional but Recommended for Twitter) -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="<?php  htmlspecialchars($consumer->consumer_name); ?> - Electricity Bill">
-<meta name="twitter:description" content="Electricity bill for the month of <?php  htmlspecialchars(date('F Y', strtotime($billing_month->billing_month . '-1'))); ?>.">
-<meta name="twitter:image" content="<?php  site_url('assets/images/electricity_bill.png'); ?>">
+    <!-- Twitter Cards Metadata (Optional but Recommended for Twitter) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?php   echo htmlspecialchars($consumer->consumer_name); ?> - Electricity Bill">
+    <meta name="twitter:description"
+        content="Electricity bill for the month of <?php   echo htmlspecialchars(date('F Y', strtotime($billing_month->billing_month . '-1'))); ?>.">
+    <meta name="twitter:image" content="<?php  site_url('assets/images/electricity_bill.png'); ?>">
 
-<!-- Cache-Control Headers for Dynamic Content -->
-<?php
+    <!-- Cache-Control Headers for Dynamic Content -->
+    <?php
 header('Cache-Control: no-cache, must-revalidate');
 header('Pragma: no-cache');
 header('Expires: 0');
 ?>
 
-<link rel="stylesheet" type="text/css" href="<?php echo site_url("assets/" . ADMIN_DIR . "css/bill.css"); ?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url("assets/" . ADMIN_DIR . "css/bill.css"); ?>" />
 </head>
 
 <body contenteditable="false" cz-shortcut-listen="true">
 
 
-    
+
 
     <div class="maincontent fontsize">
         <table style="width:100%; margin-top: 50px; margin-bottom: 20px;">
@@ -136,8 +140,8 @@ header('Expires: 0');
 
             </tbody>
         </table>
-<br />
-<br />
+        <br />
+        <br />
         <table style="width:100%">
             <tr>
                 <td>
@@ -312,11 +316,11 @@ header('Expires: 0');
                     </table>
                     <br />
                     <br />
-                                </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
                     <table class="nested7">
                         <tbody>
                             <tr class="fontsize" style="height: 28px; background-color: #7ADEFF; text-align: center">
@@ -402,44 +406,44 @@ header('Expires: 0');
             </tr>
         </table>
 
-<br /> <br /><br />
+        <br /> <br /><br />
         <div class="border-b" style="padding:10px">
             -----------------------------------------------------CUT
             HERE---------------------------------------------------&#9986;
-             <br /> <br /><br />
+            <br /> <br /><br />
         </div>
-       
+
         <div class="heade rtable fontsize">
 
-        <h5>Office Copy</h5>
+            <h5>Office Copy</h5>
             <div>
 
                 <div style=" display: inline-block">
                     <table style="width:100%">
                         <tr>
-                            
+
                             <td>
-                               <table style="width:100%; margin-top: 50px; margin-bottom: 20px;">
-            <tr>
-                <td><img id="logo_image"
-                        src="<?php echo site_url("assets/uploads/" . $system_global_settings[0]->sytem_admin_logo); ?>"
-                        alt="<?php echo $system_global_settings[0]->system_title ?>"
-                        title="<?php echo $system_global_settings[0]->system_title ?>" style="
+                                <table style="width:100%; margin-top: 50px; margin-bottom: 20px;">
+                                    <tr>
+                                        <td><img id="logo_image"
+                                                src="<?php echo site_url("assets/uploads/" . $system_global_settings[0]->sytem_admin_logo); ?>"
+                                                alt="<?php echo $system_global_settings[0]->system_title ?>"
+                                                title="<?php echo $system_global_settings[0]->system_title ?>" style="
                         float: left;
                         width: 80px !important;
                         height: 80px;
                         padding: 10px;" /></td>
-                <td style="text-align:center">
-                    <h1>
-                        <h2><?php echo $system_global_settings[0]->system_title ?> -
-                            <?php echo $system_global_settings[0]->system_sub_title ?></h2>
-                        <h5>Address:<?php echo $system_global_settings[0]->address ?></h5>
+                                        <td style="text-align:center">
+                                            <h1>
+                                                <h2><?php echo $system_global_settings[0]->system_title ?> -
+                                                    <?php echo $system_global_settings[0]->system_sub_title ?></h2>
+                                                <h5>Address:<?php echo $system_global_settings[0]->address ?></h5>
 
-                    </h1>
-                </td>
-                
-            </tr>
-        </table>
+                                            </h1>
+                                        </td>
+
+                                    </tr>
+                                </table>
 
                             <td>
                                 <table
@@ -454,7 +458,7 @@ header('Expires: 0');
                                                 <?php echo $consumer->consumer_id; ?>
                                             </td>
                                         </tr>
-                                        
+
                                         <tr>
                                             <td class="border-rb border-t"
                                                 style="border-left: 1px solid #78578e; color: #78578e;">
@@ -484,8 +488,8 @@ header('Expires: 0');
 
             </div>
 
-<br />
-<br />
+            <br />
+            <br />
 
             <div style="width: 98%; margin: 0 auto 10px;">
                 <table style="text-align: center; width: 100%; border-collapse: collapse;">
@@ -536,10 +540,10 @@ header('Expires: 0');
                     </tbody>
                 </table>
                 <br />
-<br />
-<br />
-<br />
-<p style="text-align:center"><small>Software Desing and Developed by Navid Aziz 0324-4424424</small></p>
+                <br />
+                <br />
+                <br />
+                <p style="text-align:center"><small>Software Desing and Developed by Navid Aziz 0324-4424424</small></p>
             </div>
         </div>
 
